@@ -1,0 +1,8 @@
+.section {
+    min-height: 80svh;
+    display: grid;
+    place-items: center;
+    color: #eaeaea;
+    background: #0b0b0d;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}

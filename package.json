@@ -1,0 +1,28 @@
+{
+  "name": "my-portfolio2",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.4.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "astro": "^5.14.1",
+    "gsap": "^3.13.0",
+    "postprocessing": "^6.37.8",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.180.0",
+    "three-stdlib": "^2.36.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "prettier": "^3.6.2",
+    "sharp": "^0.34.4"
+  }
+}

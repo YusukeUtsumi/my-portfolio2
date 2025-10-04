@@ -1,0 +1,27 @@
+---
+import HeroCanvas from '@/components/hero/HeroCanvas';
+import '@/styles/base.css';
+import '@/styles/hero.css';
+import '@/styles/section.css';
+---
+
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Utsumi's Portfolio</title>
+    </head>
+    <body>
+        <section class="hero">
+            <div class="hero__content" role="banner">
+                <h1 class="hero__title">Utsumi's Portfolio</h1>
+                <p class="hero__copy">AIが描く、もうひとつの現実。</p>
+            </div>
+            <HeroCanvas client:load />
+        </section>
+
+        <section class="section">
+            <p>ここに「個人開発（SilentGuard / AgentFlow）」のセクションを追加予定</p>
+        </section>
+    </body>
+</html>
