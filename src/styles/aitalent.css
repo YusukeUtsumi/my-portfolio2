@@ -1,0 +1,188 @@
+/* =========================
+    AI Talent — Film Stripes
+   ========================= */
+
+.ai-stripes {
+    background: #000;
+    padding: 6rem 0 4rem;
+}
+
+.ai-stripes .wrap {
+    width: min(1200px, 92vw);
+    margin: 0 auto;
+}
+
+.head .eyebrow {
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #9aa0a6;
+    font-size: .8rem;
+}
+.head .title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    color: #fff;
+    margin: .4rem 0 1rem;
+}
+.head .lede {
+    color: #bdbdbd;
+}
+
+/* ===== Stripes container ===== */
+.stripes {
+    margin-top: 2rem;
+    display: grid;
+    gap: 20px;
+}
+
+/* 2本の帯を用意（PC）。SPは1本に落とす */
+@media (min-width: 960px) {
+    .stripes {
+        grid-template-rows: 220px 220px;
+    }
+}
+@media (max-width: 959px) {
+    .stripes {
+        grid-template-rows: 220px;
+    }
+}
+
+/* ===== Stripe (band) ===== */
+.stripe {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    /* 影は浅め */
+    box-shadow: 0 12px 40px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
+}
+
+/* フィルム端の暗幕（端切れ防止＆集中力UP） */
+.fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    pointer-events: none;
+    z-index: 2;
+}
+.fade--left {
+    left: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+}
+.fade--right {
+    right: 0;
+    background: linear-gradient(270deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+}
+
+/* ===== Track (infinite marquee) ===== */
+.track {
+    display: flex;
+    gap: 16px; /* 少し余裕を持たせる */
+    width: max-content;
+    will-change: transform;
+}
+
+/* 画像カード：縦型1080×1920比率 */
+.card {
+    flex: 0 0 auto;
+    aspect-ratio: 8 / 9;   /* ← ★ここ重要！縦比率固定 */
+    height: 340px;          /* 帯全体の高さ（PC）をこれに合わせる */
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: #0a0a0a;
+}
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.02);
+    transition: transform .4s ease;
+}
+.card:hover img {
+    transform: scale(1.05);
+}
+
+/* ===== Stripes container ===== */
+.stripes {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 28px;
+}
+
+@media (min-width: 960px) {
+    /* 9:16比率画像を2本並べるので縦を少し広げる */
+    .stripes {
+        grid-template-rows: 360px 360px;
+    }
+}
+
+@media (max-width: 959px) {
+    /* スマホ時は1本のみ、高さを縮める */
+    .stripes {
+        grid-template-rows: 280px;
+    }
+    .card {
+        height: 280px;
+    }
+}
+
+/* ===== アニメーションはそのままでOK ===== */
+.stripe--risa .track {
+    animation: stripe-move-right 28s linear infinite;
+}
+.stripe--lilia .track {
+    animation: stripe-move-left 32s linear infinite;
+}
+
+
+/* ホバーで一時停止（PC） */
+.stripe:hover .track {
+    animation-play-state: paused;
+}
+
+/* SPはタップで一時停止したい場合、JSで .paused を付与予定（CSS側も一応用意） */
+.stripe.paused .track {
+    animation-play-state: paused;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .stripe .track {
+        animation: none !important;
+    }
+}
+
+/* 無限マルキー（シームレスに見せるため、同じ並びを2回DOMに入れてある） */
+@keyframes stripe-move-right {
+    from { transform: translateX(-50%); }  /* ちょうど中間から始めると途切れにくい */
+    to   { transform: translateX(0%); }
+}
+@keyframes stripe-move-left {
+    from { transform: translateX(0%); }
+    to   { transform: translateX(-50%); }
+}
+
+/* ===== CTA ===== */
+.cta-row {
+    margin-top: 2rem;
+    display: flex;
+    gap: .8rem;
+    align-items: center;
+}
+.cta-row .cta {
+    display: inline-block;
+    padding: .7rem 1rem;
+    background: #fff;
+    color: #000;
+    border-radius: .75rem;
+    font-weight: 600;
+}
+.cta-row .link {
+    color: #bdbdbd;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}

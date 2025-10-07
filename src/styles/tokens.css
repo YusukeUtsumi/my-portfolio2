@@ -1,0 +1,22 @@
+:root {
+    /* 色 */
+    --bg: #000000;
+    --bg-elev-1: #0a0a0c;
+    --text: #ffffff;
+    --text-subtle: #bdbdbd;
+    --hairline: rgba(255, 255, 255, 0.06);
+
+    /* タイポ */
+    --ff-sans: Inter, "SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, "Noto Sans JP", Helvetica, Arial, sans-serif;
+    --h1-size: clamp(28px, 6vw, 72px);
+    --h1-weight: 700;
+    --copy-size: clamp(14px, 2.5vw, 18px);
+
+    /* 余白 */
+    --header-pad-x: clamp(20px, 5vw, 48px);
+    --header-pad-y: 24px;
+    --section-pad-y: clamp(64px, 16vw, 160px);
+
+    /* 動き */
+    --ease: cubic-bezier(.2,.7,.2,1);
+}

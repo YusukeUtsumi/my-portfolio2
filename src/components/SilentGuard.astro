@@ -1,0 +1,35 @@
+---
+import PanelCarousel from "./silentguard/PanelCarousel";
+const slides = [
+    { src: "/images/silentguard_main.webp", caption: "メインログビュー" },
+    { src: "/images/silentguard_ui2.webp", caption: "隔離後のワークフロー" }
+    // 必要なら3枚目を追加：{ src: "/images/agentflow_main.webp", caption: "（デモ）イベント概要" }
+];
+---
+<section id="silentguard" class="sg-section">
+    <div class="sg-container">
+        <header class="sg-head">
+            <p class="eyebrow">Security Utility</p>
+            <h2 class="title">SilentGuard</h2>
+            <p class="lede">
+                Windows Defender と ETW を活用した、<span>“静かに効く”</span>軽量セキュリティモニタ。
+            </p>
+            <ul class="bullets">
+                <li>8KBコア / 135KB exe（PoC）</li>
+                <li>隔離後は他社AVでダブルチェック</li>
+                <li>ETW/FileSystemWatcher による低レイテンシ検知</li>
+            </ul>
+            <div class="cta-row">
+                <a href="https://github.com/YusukeUtsumi/SilentGuard" target="_blank" rel="noreferrer" class="cta">GitHubを見る</a>
+            </div>
+        </header>
+
+        <div class="panel-wrap">
+            <div class="glow" aria-hidden="true"></div>
+            <div class="device-frame">
+                <PanelCarousel client:visible slides={slides} />
+            </div>
+            <p class="caption">実行画面はデモ用です。UIなし構成のPoCを視覚化。</p>
+        </div>
+    </div>
+</section>

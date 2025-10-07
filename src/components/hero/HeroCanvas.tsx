@@ -1,117 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import {
-    EffectComposer,
-    RenderPass,
-    EffectPass,
-    BloomEffect,
-    GodRaysEffect
-} from 'postprocessing';
 
 /**
- * Hero 背景：抽象派手め
- *  - ネビュラ・フォグ（シェーダ平面 + カラーノイズ）
- *  - ゴッドレイ（光条：postprocessing / GodRaysEffect）
- *  - 微粒子ドリフト（遠景の小粒 Additive）
- *  - PCのみ（SPはHeroテキスト優先。reduced-motionにも対応）
- *
- * MODE を切り替えると色プリセットが反映されます。
- *   'risa'    : 薄い金 × 乳白
- *   'lilia'   : 深い紺 × アメジスト
- *   'personal': ブルーグリーン（SilentGuard / AgentFlow 共通）
+ * Hero 背景：パステル三角片 × スリット光 × 3幕のミニ物語（ループ）
+ * Act1: DRIFT（散逸） → Act2: GATHER_OUTLINE/FILL（召喚） → Act3: RELEASE（啓示→解放）
+ * - 透明キャンバス。テキストは前面のまま。
+ * - PostProcessing不使用（軽量）。
+ * - three r150+ 対応（colorSpaceやinstanceColorの扱いに注意）。
  */
-const MODE: 'risa' | 'lilia' | 'personal' = 'lilia';
-
-const PRESETS = {
-    risa: {
-        fogA: new THREE.Color('#F6E9C9'),   // 乳白
-        fogB: new THREE.Color('#C9A646'),   // 薄い金
-        god: new THREE.Color('#FFF4CC'),
-        particleA: new THREE.Color('#FFF1D6'),
-        particleB: new THREE.Color('#EACE6A')
-    },
-    lilia: {
-        fogA: new THREE.Color('#0E1035'),   // 深い紺
-        fogB: new THREE.Color('#5D2E8C'),   // アメジスト
-        god: new THREE.Color('#B19CFF'),
-        particleA: new THREE.Color('#B9A3FF'),
-        particleB: new THREE.Color('#5CB8B2')
-    },
-    personal: {
-        fogA: new THREE.Color('#041F2A'),   // 濃紺
-        fogB: new THREE.Color('#0D4D4A'),   // ティール
-        god: new THREE.Color('#8FD3E8'),
-        particleA: new THREE.Color('#7FD9FF'),
-        particleB: new THREE.Color('#00BFA5')
-    }
-} as const;
-
-const VERT = /* glsl */`
-    precision highp float;
-    varying vec2 vUv;
-    void main() {
-        vUv = uv;
-        gl_Position = vec4(position, 1.0);
-    }
-`;
-
-// 2D ノイズ（simplex 簡易版）＋ 緩やかな時間変化で雲状グラデ
-const FRAG = /* glsl */`
-    precision highp float;
-    varying vec2 vUv;
-    uniform float uTime;
-    uniform vec2  uResolution;
-    uniform vec3  uColorA;
-    uniform vec3  uColorB;
-    uniform float uGrain;
-
-    // hash / noise（簡易）
-    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
-    float noise(vec2 p){
-        vec2 i = floor(p);
-        vec2 f = fract(p);
-        float a = hash(i);
-        float b = hash(i + vec2(1.0, 0.0));
-        float c = hash(i + vec2(0.0, 1.0));
-        float d = hash(i + vec2(1.0, 1.0));
-        vec2 u = f * f * (3.0 - 2.0 * f);
-        return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
-    }
-    float fbm(vec2 p){
-        float v = 0.0;
-        float a = 0.5;
-        for(int i=0;i<5;i++){
-            v += a * noise(p);
-            p *= 2.0;
-            a *= 0.5;
-        }
-        return v;
-    }
-
-    void main() {
-        // 中央がやや明るくなるレンズ風
-        vec2 uv = vUv - 0.5;
-        float vignette = smoothstep(0.95, 0.2, length(uv));
-
-        // 時間でゆっくり流れる雲
-        float t = uTime * 0.03;
-        vec2 p = (vUv * vec2(uResolution.x / uResolution.y, 1.0)) * 1.5;
-        float n  = fbm(p + t);
-        float n2 = fbm((p - t) * 0.6 + 10.0);
-
-        // 2色間をノイズでミックス
-        vec3 col = mix(uColorA, uColorB, smoothstep(0.2, 0.85, n * 0.75 + n2 * 0.25));
-
-        // 軽い粒状感
-        float grain = (hash(vUv * uResolution.xy + uTime) - 0.5) * uGrain;
-        col += grain;
-
-        // 中央の持ち上げ + 外周の落ち
-        col *= vignette * 1.08;
-
-        gl_FragColor = vec4(col, 1.0);
-    }
-`;
 
 export default function HeroCanvas() {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -121,212 +17,462 @@ export default function HeroCanvas() {
         const width = container.clientWidth;
         const height = container.clientHeight;
 
-        const reducedMotion = typeof window !== 'undefined'
-            ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            : false;
-
-        // Renderer
+        // --------------------------------------
+        // 基本セットアップ
+        // --------------------------------------
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(width, height);
-        renderer.autoClear = false; // composerが管理
+        renderer.setClearColor(0x000000, 0);
+        (renderer as any).outputColorSpace = THREE.SRGBColorSpace;
         container.appendChild(renderer.domElement);
 
-        // Scene / Camera
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
         camera.position.set(0, 0, 4);
 
-        // --------------------------------------------------
-        // 1) ネビュラ・フォグ（フルスクリーン四角形にシェーダ）
-        // --------------------------------------------------
-        const quadGeo = new THREE.PlaneGeometry(2, 2);
-        const preset = PRESETS[MODE];
-        const nebulaMat = new THREE.ShaderMaterial({
-            vertexShader: VERT,
-            fragmentShader: FRAG,
-            uniforms: {
-                uTime: { value: 0 },
-                uResolution: { value: new THREE.Vector2(width, height) },
-                uColorA: { value: preset.fogA },
-                uColorB: { value: preset.fogB },
-                uGrain: { value: 0.06 }
-            },
-            depthWrite: false,
-            depthTest: false
-        });
-        const nebula = new THREE.Mesh(quadGeo, nebulaMat);
-        nebula.frustumCulled = false;
-
-        // ネビュラ専用の背景シーン & orthographic camera
-        const bgScene = new THREE.Scene();
-        const bgCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        bgScene.add(nebula);
-
-        // --------------------------------------------------
-        // 2) 微粒子ドリフト（遠景 Points）
-        // --------------------------------------------------
-        const particleCount = 2400;
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-        const colorA = new THREE.Color(preset.particleA);
-        const colorB = new THREE.Color(preset.particleB);
-        for (let i = 0; i < particleCount; i++) {
-            // 遠景に散布（薄い球殻）
-            const r = 4.5 + Math.random() * 1.5;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(THREE.MathUtils.randFloatSpread(2)); // 0..PI
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.sin(phi) * Math.sin(theta);
-            const z = r * Math.cos(phi);
-            positions[i * 3 + 0] = x;
-            positions[i * 3 + 1] = y;
-            positions[i * 3 + 2] = z;
-
-            const c = colorA.clone().lerp(colorB, Math.random());
-            colors[i * 3 + 0] = c.r;
-            colors[i * 3 + 1] = c.g;
-            colors[i * 3 + 2] = c.b;
-        }
-        const pGeo = new THREE.BufferGeometry();
-        pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        pGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        const pMat = new THREE.PointsMaterial({
-            size: 0.01,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.28,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
-        const particles = new THREE.Points(pGeo, pMat);
-        scene.add(particles);
-
-        // スクロールで密度（=不透明度）を10〜20%だけ変化
-        const handleScroll = () => {
-            const y = window.scrollY || 0;
-            const vh = window.innerHeight || 1;
-            const n = THREE.MathUtils.clamp(y / (vh * 1.2), 0, 1); // 0..1
-            const base = 0.22;
-            const delta = 0.10; // 最大 +0.10
-            pMat.opacity = base + n * delta;
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        // --------------------------------------------------
-        // 3) ゴッドレイ（上部の光源から光条）
-        // --------------------------------------------------
-        // 光源となるメッシュ（薄い円盤を上部に）
-        const sun = new THREE.Mesh(
-            new THREE.SphereGeometry(0.35, 32, 32),
-            new THREE.MeshBasicMaterial({ color: preset.god })
-        );
-        sun.position.set(0, 1.2, -1.2);
-        scene.add(sun);
-
-        // ライト（視覚補助）
-        const hemi = new THREE.HemisphereLight(0xffffff, preset.fogA, 0.6);
-        scene.add(hemi);
-
-        // ポストエフェクト
-        const composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-
-        // Bloom（にじみ過ぎ注意。threshold 高めで上品に）
-        const bloom = new BloomEffect({
-            intensity: MODE === 'lilia' ? 1.15 : 1.0,
-            luminanceThreshold: 0.9,
-            luminanceSmoothing: 0.2
-        });
-
-        // God Rays
-        const godrays = new GodRaysEffect(camera, sun, {
-            density: 0.9,
-            decay: 0.93,
-            weight: 0.6,
-            samples: 60,
-            clampMax: 1.0
-        });
-
-        const effectPass = new EffectPass(camera, bloom, godrays);
-        effectPass.renderToScreen = true;
-        composer.addPass(effectPass);
-
-        // --------------------------------------------------
-        // 4) パララックス（視差に連動して角度微変化）
-        // --------------------------------------------------
+        // 視差（ほんの少し）
         let targetRotX = 0;
         let targetRotY = 0;
-        const maxTilt = THREE.MathUtils.degToRad(2.5);
-
+        const maxTilt = THREE.MathUtils.degToRad(2.0);
         const onMouseMove = (e: MouseEvent) => {
-            const nx = (e.clientX / width) * 2 - 1;
-            const ny = (e.clientY / height) * 2 - 1;
+            const rect = container.getBoundingClientRect();
+            const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
             targetRotY = nx * maxTilt;
             targetRotX = -ny * maxTilt;
         };
-        const onLeave = () => {
-            targetRotX = 0;
-            targetRotY = 0;
-        };
+        const onLeave = () => { targetRotX = 0; targetRotY = 0; };
         container.addEventListener('mousemove', onMouseMove);
         container.addEventListener('mouseleave', onLeave);
 
-        // --------------------------------------------------
-        // 5) ループ
-        // --------------------------------------------------
-        let rafId = 0;
-        let t = 0;
+        // --------------------------------------
+        // パレット（ループ毎にローテーション）
+        // --------------------------------------
+        const PRESETS = [
+            { // Risa（ピンク強め）
+                name: 'risa',
+                tri: ['#FFC8DD', '#FFAFCC', '#FDECEF', '#E4C1F9', '#FFD6F0', '#CDE8FF'],
+                slitA: '#FFD6F0', slitB: '#CDEBFF'
+            },
+            { // Lilia（水色 + ラベンダー）
+                name: 'lilia',
+                tri: ['#BDE0FE', '#A2D2FF', '#E4C1F9', '#CDE8FF', '#FDECEF', '#E3F2FF'],
+                slitA: '#E4C1F9', slitB: '#BDE0FE'
+            },
+            { // Personal（アクア + ベビーブルー）
+                name: 'personal',
+                tri: ['#CDE8FF', '#BDE0FE', '#A2D2FF', '#D7F6F2', '#FDECEF', '#EAF6FF'],
+                slitA: '#CDE8FF', slitB: '#FFFFFF'
+            }
+        ] as const;
+        let presetIndex = 0;
+        let currentPreset = PRESETS[presetIndex];
+
+        // --------------------------------------
+        // スリット光（Sprite）
+        // --------------------------------------
+        function makeStreakTexture(w = 256, h = 896, colorA = '#ffffff', colorB = '#ffffff00') {
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d')!;
+            const g = ctx.createLinearGradient(w / 2, 0, w / 2, h);
+            g.addColorStop(0.00, colorB);
+            g.addColorStop(0.18, colorA);
+            g.addColorStop(0.33, colorB);
+            g.addColorStop(0.67, colorB);
+            g.addColorStop(0.82, colorA);
+            g.addColorStop(1.00, colorB);
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, w, h);
+            const tex = new THREE.CanvasTexture(canvas);
+            (tex as any).colorSpace = THREE.SRGBColorSpace;
+            tex.anisotropy = 4;
+            return tex;
+        }
+        const streakGroup = new THREE.Group();
+        scene.add(streakGroup);
+
+        function spawnStreaks(preset: typeof PRESETS[number]) {
+            streakGroup.clear();
+            const tex = makeStreakTexture(256, 896, preset.slitA, `${preset.slitB}00`);
+            const COUNT = 6;
+            for (let i = 0; i < COUNT; i++) {
+                const spr = new THREE.Sprite(new THREE.SpriteMaterial({
+                    map: tex,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    opacity: 0.2 + (i % 2 === 0 ? 0.05 : 0.0)
+                }));
+                spr.position.set(
+                    THREE.MathUtils.randFloat(-2.8, 2.8),
+                    THREE.MathUtils.randFloat(-1.8, 1.8),
+                    THREE.MathUtils.randFloat(-0.8, -0.2)
+                );
+                spr.scale.set(THREE.MathUtils.randFloat(0.6, 1.1), THREE.MathUtils.randFloat(3.2, 4.8), 1);
+                spr.rotation.z = THREE.MathUtils.randFloat(-Math.PI / 12, Math.PI / 12);
+                (spr as any)._phase = Math.random() * Math.PI * 2;
+                streakGroup.add(spr);
+            }
+        }
+        spawnStreaks(currentPreset);
+
+        // --------------------------------------
+        // 三角片（InstancedMesh）
+        // --------------------------------------
+        const SHARD_COUNT = 360;
+        const SIZE_MIN = 0.30;
+        const SIZE_MAX = 0.90;
+
+        const baseTri = new THREE.CircleGeometry(1, 3);
+        // 少し乱形に
+        const posAttr = baseTri.attributes.position as THREE.BufferAttribute;
+        for (let i = 0; i < posAttr.count; i++) {
+            const x = posAttr.getX(i);
+            const y = posAttr.getY(i);
+            posAttr.setXY(i, x * THREE.MathUtils.randFloat(0.9, 1.1), y * THREE.MathUtils.randFloat(0.9, 1.1));
+        }
+        posAttr.needsUpdate = true;
+
+        const shardMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.95,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const shards = new THREE.InstancedMesh(baseTri, shardMat, SHARD_COUNT);
+        shards.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        scene.add(shards);
+
+        // per-instance color（three r150+）
+        const colorArray = new Float32Array(SHARD_COUNT * 3);
+        shards.instanceColor = new THREE.InstancedBufferAttribute(colorArray, 3, false);
+
+        // 初期散布
+        const basePos: THREE.Vector3[] = [];
+        const baseRot: THREE.Euler[] = [];
+        const baseScale: THREE.Vector3[] = [];
+        const dummy = new THREE.Object3D();
+        function setPaletteColors(preset: typeof PRESETS[number], lerpFrom?: Float32Array) {
+            // palette lerp（必要ならクロスフェード）
+            for (let i = 0; i < SHARD_COUNT; i++) {
+                const c = new THREE.Color(preset.tri[i % preset.tri.length]);
+                if (lerpFrom) {
+                    // 直前の色から滑らかに（0.85）
+                    const r0 = lerpFrom[i * 3 + 0], g0 = lerpFrom[i * 3 + 1], b0 = lerpFrom[i * 3 + 2];
+                    colorArray[i * 3 + 0] = THREE.MathUtils.lerp(r0, c.r, 0.85);
+                    colorArray[i * 3 + 1] = THREE.MathUtils.lerp(g0, c.g, 0.85);
+                    colorArray[i * 3 + 2] = THREE.MathUtils.lerp(b0, c.b, 0.85);
+                } else {
+                    colorArray[i * 3 + 0] = c.r;
+                    colorArray[i * 3 + 1] = c.g;
+                    colorArray[i * 3 + 2] = c.b;
+                }
+            }
+            shards.instanceColor!.needsUpdate = true;
+        }
+
+        for (let i = 0; i < SHARD_COUNT; i++) {
+            basePos.push(new THREE.Vector3(
+                THREE.MathUtils.randFloat(-3.7, 3.7),
+                THREE.MathUtils.randFloat(-2.3, 2.3),
+                THREE.MathUtils.randFloat(-0.6, 0.6)
+            ));
+            baseRot.push(new THREE.Euler(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            ));
+            const s = THREE.MathUtils.randFloat(SIZE_MIN, SIZE_MAX);
+            baseScale.push(new THREE.Vector3(s, s * THREE.MathUtils.randFloat(0.85, 1.15), 1));
+        }
+        setPaletteColors(currentPreset);
+
+        for (let i = 0; i < SHARD_COUNT; i++) {
+            dummy.position.copy(basePos[i]);
+            dummy.rotation.copy(baseRot[i]);
+            dummy.scale.copy(baseScale[i]);
+            dummy.updateMatrix();
+            shards.setMatrixAt(i, dummy.matrix);
+        }
+        shards.instanceMatrix.needsUpdate = true;
+
+        // --------------------------------------
+        // 円環ターゲット（輪郭/内部）
+        // --------------------------------------
+        const OUTLINE_RATIO = 0.4; // 輪郭:内部 = 40:60
+        const outlineCount = Math.floor(SHARD_COUNT * OUTLINE_RATIO);
+        const fillCount = SHARD_COUNT - outlineCount;
+
+        const targetOutline: THREE.Vector3[] = []; // 外周リング
+        const targetFill: THREE.Vector3[] = [];    // 内側充填リング群
+        const R_BASE = 1.10;   // 半径
+        const THICK = 0.18;    // リング幅（厚み）
+
+        function regenerateRingTargets(radiusScale = 1.0) {
+            targetOutline.length = 0;
+            targetFill.length = 0;
+
+            const R = R_BASE * radiusScale;
+            // 輪郭：均等 + 少しのジッタ
+            for (let i = 0; i < outlineCount; i++) {
+                const a = (i / outlineCount) * Math.PI * 2;
+                const jitter = THREE.MathUtils.randFloatSpread(0.04);
+                targetOutline.push(new THREE.Vector3(
+                    Math.cos(a) * (R + jitter),
+                    Math.sin(a) * (R + jitter),
+                    THREE.MathUtils.randFloatSpread(0.04)
+                ));
+            }
+            // 内部：リング幅内でランダム
+            for (let i = 0; i < fillCount; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const r = R + THREE.MathUtils.randFloatSpread(THICK);
+                targetFill.push(new THREE.Vector3(
+                    Math.cos(a) * r,
+                    Math.sin(a) * r,
+                    THREE.MathUtils.randFloatSpread(0.06)
+                ));
+            }
+        }
+        regenerateRingTargets(1.0);
+
+        // --------------------------------------
+        // シンボル（中央に一瞬だけ出す）
+        // --------------------------------------
+        function makeSymbolTexture(text: string, color = '#ffffff') {
+            const w = 256, h = 256;
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d')!;
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '700 80px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+            // 簡素な幾何記号（● / ◆ / ✷ をループで変える）
+            ctx.globalAlpha = 0.95;
+            ctx.fillText(text, w / 2, h / 2);
+            const tex = new THREE.CanvasTexture(canvas);
+            (tex as any).colorSpace = THREE.SRGBColorSpace;
+            tex.anisotropy = 4;
+            return tex;
+        }
+
+        const symbolGroup = new THREE.Group();
+        scene.add(symbolGroup);
+        const SYMBOLS = ['✷', '◆', '●']; // Risa / Lilia / Personal の順に対応
+        let symbolSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: makeSymbolTexture(SYMBOLS[0], '#ffffff'),
+            transparent: true,
+            opacity: 0.0,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        }));
+        symbolSprite.scale.set(0.8, 0.8, 1);
+        symbolGroup.add(symbolSprite);
+
+        function updateSymbolForPreset(index: number) {
+            const sym = SYMBOLS[index % SYMBOLS.length];
+            symbolSprite.material.map = makeSymbolTexture(sym, '#ffffff');
+            symbolSprite.material.needsUpdate = true;
+            symbolSprite.scale.set(0.8, 0.8, 1);
+            symbolSprite.material.opacity = 0.0;
+        }
+
+        // --------------------------------------
+        // タイムライン・ステート
+        // --------------------------------------
+        type State = 'DRIFT' | 'GATHER_OUTLINE' | 'FILL_RING' | 'RELEASE';
+        let state: State = 'DRIFT';
+        let tState = 0; // 現在ステートの経過時間（秒）
+
+        // 時間配分（合計 ~8.8s）
+        const T_DRIFT = 2.0;
+        const T_GATHER = 1.2;
+        const T_FILL = 2.0;
+        const T_RELEASE = 3.6;
+
+        // ドリフトパラメータ
+        const DRIFT_SPEED = 0.06;
+        const DRIFT_STRENGTH = 0.55;
+
+        // イージング
+        const easeInPower3 = (t: number) => t * t * t;
+        const easeOutPower2 = (t: number) => 1 - (1 - t) * (1 - t);
+        const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+
+        // 各インスタンスに固定の位相
+        const phases = new Float32Array(SHARD_COUNT);
+        for (let i = 0; i < SHARD_COUNT; i++) phases[i] = Math.random() * Math.PI * 2;
+
+        // --------------------------------------
+        // メインループ
+        // --------------------------------------
         const clock = new THREE.Clock();
+        let rafId = 0;
 
         const render = () => {
             const dt = clock.getDelta();
-            if (!reducedMotion) {
-                t += dt;
-                nebulaMat.uniforms.uTime.value = t;
-                // 光源をほんの少しだけ揺らす（視差に連動）
-                sun.position.x = THREE.MathUtils.lerp(sun.position.x, targetRotY * 1.2, 0.05);
-                sun.position.y = THREE.MathUtils.lerp(sun.position.y, 1.2 + targetRotX * 1.2, 0.05);
-                // 粒子をゆっくり回転（遠景の漂い）
-                particles.rotation.y += 0.002 * (MODE === 'lilia' ? 1.1 : 1.0);
-                particles.rotation.x += 0.0008;
+            tState += dt;
+
+            // 視差
+            scene.rotation.x = THREE.MathUtils.lerp(scene.rotation.x, targetRotX, 0.08);
+            scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, targetRotY, 0.08);
+
+            // ステート遷移
+            if (state === 'DRIFT' && tState >= T_DRIFT) {
+                state = 'GATHER_OUTLINE';
+                tState = 0;
+            } else if (state === 'GATHER_OUTLINE' && tState >= T_GATHER) {
+                state = 'FILL_RING';
+                tState = 0;
+            } else if (state === 'FILL_RING' && tState >= T_FILL) {
+                state = 'RELEASE';
+                tState = 0;
+                // シンボル出現（RELEASEの頭で）
+                symbolSprite.material.opacity = 0.0;
+            } else if (state === 'RELEASE' && tState >= T_RELEASE) {
+                // 1ループ終了 → 次プリセットへ
+                const prevColors = colorArray.slice(0);
+                presetIndex = (presetIndex + 1) % PRESETS.length;
+                currentPreset = PRESETS[presetIndex];
+                setPaletteColors(currentPreset, prevColors);
+                spawnStreaks(currentPreset);
+                updateSymbolForPreset(presetIndex);
+                regenerateRingTargets(1.0 + THREE.MathUtils.randFloatSpread(0.05)); // 半径に微差
+                // ベース散布も少しだけ更新して多様性を
+                for (let i = 0; i < SHARD_COUNT; i++) {
+                    basePos[i].x = THREE.MathUtils.randFloat(-3.7, 3.7);
+                    basePos[i].y = THREE.MathUtils.randFloat(-2.3, 2.3);
+                    basePos[i].z = THREE.MathUtils.randFloat(-0.6, 0.6);
+                }
+                state = 'DRIFT';
+                tState = 0;
             }
-            // カメラの傾き（慣性）
-            const lerp = 0.08;
-            scene.rotation.x = THREE.MathUtils.lerp(scene.rotation.x, targetRotX, lerp);
-            scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, targetRotY, lerp);
 
-            // 背景 → 前景 + ポスト
-            renderer.clear();
-            renderer.render(bgScene, bgCamera);
-            composer.render();
+            // スリット光ゆらぎ
+            const tAll = clock.elapsedTime;
+            streakGroup.children.forEach((s: any) => {
+                const spr = s as THREE.Sprite;
+                const ph = (spr as any)._phase as number;
+                spr.position.y += Math.sin(tAll * 0.25 + ph) * 0.003;
+                spr.rotation.z += Math.sin(tAll * 0.08 + ph) * 0.002;
+                const baseOpacity = 0.18;
+                spr.material.opacity = baseOpacity + (Math.sin(tAll * 0.5 + ph) * 0.5 + 0.5) * 0.08;
+            });
 
+            // シンボル（RELEASEの最初の0.8sだけ現れて消える）
+            if (state === 'RELEASE') {
+                const u = tState / 0.8;
+                if (u < 1) {
+                    const fade = Math.sin(Math.PI * clamp01(u)); // 0→1→0
+                    symbolSprite.material.opacity = 0.9 * fade;
+                    const s = 0.7 + 0.2 * Math.sin(Math.PI * clamp01(u));
+                    symbolSprite.scale.set(s, s, 1);
+                } else {
+                    symbolSprite.material.opacity = 0.0;
+                }
+            }
+
+            // 破片更新
+            for (let i = 0; i < SHARD_COUNT; i++) {
+                const bp = basePos[i];
+                const br = baseRot[i];
+                const bs = baseScale[i];
+                const ph = phases[i];
+
+                // ベース：ドリフト（常時）
+                const t = tAll;
+                const offX = (Math.sin(bp.x * 1.3 + ph + t * DRIFT_SPEED) * 0.6 + Math.cos(bp.y * 1.7 - ph + t * 0.9) * 0.4) * DRIFT_STRENGTH;
+                const offY = (Math.sin(bp.y * 1.1 + ph + t * (DRIFT_SPEED * 0.9)) * 0.6 + Math.cos(bp.z * 1.5 + ph * 0.7 + t * 0.7) * 0.4) * DRIFT_STRENGTH * 0.8;
+                const offZ = (Math.sin(bp.z * 1.0 + ph + t * 0.7) * 0.6 + Math.cos(bp.x * 0.8 - ph + t * 0.6) * 0.4) * DRIFT_STRENGTH * 0.4;
+
+                let tx = bp.x + offX;
+                let ty = bp.y + offY;
+                let tz = bp.z + offZ;
+
+                // 集束：輪郭→内部
+                if (state === 'GATHER_OUTLINE') {
+                    const u = clamp01(tState / T_GATHER);
+                    const e = easeInPower3(u);
+                    const idx = i % outlineCount;
+                    const p = targetOutline[idx];
+                    // 大きい破片ほど遅らせる
+                    const sizeDelay = THREE.MathUtils.mapLinear(bs.x, SIZE_MIN, SIZE_MAX, 0.15, 0.0);
+                    const k = clamp01(e - sizeDelay);
+                    tx = THREE.MathUtils.lerp(tx, p.x, k);
+                    ty = THREE.MathUtils.lerp(ty, p.y, k);
+                    tz = THREE.MathUtils.lerp(tz, p.z, k);
+                } else if (state === 'FILL_RING') {
+                    const u = clamp01(tState / T_FILL);
+                    const e = easeOutPower2(u);
+                    // 輪郭以外の片を内側リングへ
+                    const idx = i % fillCount;
+                    const p = targetFill[idx];
+                    const sizeDelay = THREE.MathUtils.mapLinear(bs.x, SIZE_MIN, SIZE_MAX, 0.1, 0.0);
+                    const k = clamp01(e - sizeDelay);
+                    tx = THREE.MathUtils.lerp(tx, p.x, k);
+                    ty = THREE.MathUtils.lerp(ty, p.y, k);
+                    tz = THREE.MathUtils.lerp(tz, p.z, k);
+                } else if (state === 'RELEASE') {
+                    // 円環を保ったまま、半径に微妙な呼吸
+                    const idxO = i % outlineCount;
+                    const idxF = i % fillCount;
+                    const p = (i < outlineCount) ? targetOutline[idxO] : targetFill[idxF];
+                    const breathe = 1.0 + Math.sin(tAll * 0.8 + ph) * 0.03;
+                    tx = THREE.MathUtils.lerp(tx, p.x * breathe, 0.65);
+                    ty = THREE.MathUtils.lerp(ty, p.y * breathe, 0.65);
+                    tz = THREE.MathUtils.lerp(tz, p.z, 0.65);
+                }
+
+                dummy.position.set(tx, ty, tz);
+
+                // 回転：サイズが大きいほど遅く
+                const rotScale = THREE.MathUtils.mapLinear(bs.x, SIZE_MIN, SIZE_MAX, 1.2, 0.5);
+                dummy.rotation.set(
+                    br.x + 0.08 * 0.016 * rotScale,
+                    br.y + 0.06 * 0.016 * rotScale,
+                    br.z + 0.04 * 0.016 * rotScale
+                );
+
+                // 呼吸スケール
+                const breatheS = 1.0 + Math.sin((tAll + ph) * 0.6) * 0.05;
+                dummy.scale.set(bs.x * breatheS, bs.y * breatheS, 1);
+
+                dummy.updateMatrix();
+                shards.setMatrixAt(i, dummy.matrix);
+            }
+            shards.instanceMatrix.needsUpdate = true;
+
+            renderer.render(scene, camera);
             rafId = requestAnimationFrame(render);
         };
         render();
 
-        // --------------------------------------------------
-        // 6) リサイズ
-        // --------------------------------------------------
+        // --------------------------------------
+        // リサイズ
+        // --------------------------------------
         const onResize = () => {
             const w = container.clientWidth;
             const h = container.clientHeight;
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setSize(w, h);
-            composer.setSize(w, h);
             camera.aspect = w / h;
             camera.updateProjectionMatrix();
-            nebulaMat.uniforms.uResolution.value.set(w, h);
+            renderer.setSize(w, h);
         };
         const ro = new ResizeObserver(onResize);
         ro.observe(container);
 
-        // --------------------------------------------------
-        // 7) クリーンアップ
-        // --------------------------------------------------
+        // --------------------------------------
+        // クリーンアップ
+        // --------------------------------------
         return () => {
             cancelAnimationFrame(rafId);
-            window.removeEventListener('scroll', handleScroll);
             container.removeEventListener('mousemove', onMouseMove);
             container.removeEventListener('mouseleave', onLeave);
             ro.disconnect();
@@ -338,11 +484,7 @@ export default function HeroCanvas() {
     return (
         <div
             ref={containerRef}
-            style={{
-                position: 'absolute',
-                inset: 0,
-                pointerEvents: 'none' // クリックはテキスト側へ
-            }}
+            style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
             aria-hidden="true"
         />
     );

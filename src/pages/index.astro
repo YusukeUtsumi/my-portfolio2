@@ -1,27 +1,30 @@
 ---
-import HeroCanvas from '@/components/hero/HeroCanvas';
-import '@/styles/base.css';
-import '@/styles/hero.css';
-import '@/styles/section.css';
+import Hero from "@/components/Hero.astro";
+import AiTalent from "@/components/AiTalent.astro";
+import SilentGuard from "@/components/SilentGuard.astro"
+import "@/styles/global.css";
 ---
 
 <html lang="ja">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>Utsumi's Portfolio</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Utsumi’s Portfolio</title>
+        <meta name="description" content="AIが描く、もうひとつの現実。Risa / Lilia / SilentGuard / AgentFlow ポートフォリオ。" />
     </head>
     <body>
-        <section class="hero">
-            <div class="hero__content" role="banner">
-                <h1 class="hero__title">Utsumi's Portfolio</h1>
-                <p class="hero__copy">AIが描く、もうひとつの現実。</p>
-            </div>
-            <HeroCanvas client:load />
-        </section>
+        <Hero />
 
-        <section class="section">
-            <p>ここに「個人開発（SilentGuard / AgentFlow）」のセクションを追加予定</p>
-        </section>
+        <!-- 追加：スクリプト読込 → AIタレント -->
+		<script src="/src/scripts/aitalent.ts" type="module"></script>
+		<AiTalent />
+
+		<!-- その下に個人開発（例：SilentGuard） -->
+		<script src="/src/scripts/silentguard.ts" type="module"></script>
+		<SilentGuard />
+
+		<!-- AgentFlow は後で -->
+		<!-- <AgentFlow /> -->
+
     </body>
 </html>

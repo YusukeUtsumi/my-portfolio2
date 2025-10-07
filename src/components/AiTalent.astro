@@ -1,0 +1,65 @@
+---
+const risa = [
+    { src: "/images/risa_gallery_01.webp", alt: "Risa 01" },
+    { src: "/images/risa_gallery_02.webp", alt: "Risa 02" },
+    { src: "/images/risa_gallery_03.webp", alt: "Risa 03" },
+    { src: "/images/risa_gallery_04.webp", alt: "Risa 04" },
+    { src: "/images/risa_gallery_05.webp", alt: "Risa 05" },
+    { src: "/images/risa_gallery_06.webp", alt: "Risa 06" }
+];
+const lilia = [
+    { src: "/images/lilia_gallery_01.webp", alt: "Lilia 01" },
+    { src: "/images/lilia_gallery_02.webp", alt: "Lilia 02" },
+    { src: "/images/lilia_gallery_03.webp", alt: "Lilia 03" },
+    { src: "/images/lilia_gallery_04.webp", alt: "Lilia 04" },
+    { src: "/images/lilia_gallery_05.webp", alt: "Lilia 05" },
+    { src: "/images/lilia_gallery_06.webp", alt: "Lilia 06" }
+];
+
+/**
+ * 無限ループをシームレスにするため、同じ並びを2回連結して帯を形成します。
+ */
+function loop2(arr: { src: string; alt: string }[]) {
+    return [...arr, ...arr];
+}
+---
+<section id="ai-talent" class="ai-stripes">
+    <div class="wrap">
+        <header class="head">
+            <p class="eyebrow">AI Talent</p>
+            <h2 class="title">Risa / Lilia — Film Stripes</h2>
+            <p class="lede">静かな黒に、フィルムが流れる。ホバーで一時停止します。</p>
+        </header>
+
+        <!-- Stripes: 2本（PC） / 1本（SP） -->
+        <div class="stripes">
+            <!-- 上段：Risa 帯（→ 右へ流れる） -->
+            <div class="stripe stripe--risa" aria-label="Risa film stripe">
+                <div class="track">
+                    {loop2(risa).map((img) => (
+                        <figure class="card">
+                            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+                        </figure>
+                    ))}
+                </div>
+                <div class="fade fade--left" aria-hidden="true"></div>
+                <div class="fade fade--right" aria-hidden="true"></div>
+            </div>
+
+            <!-- 下段：Lilia 帯（← 左へ流れる） -->
+            <div class="stripe stripe--lilia" aria-label="Lilia film stripe">
+                <div class="track">
+                    {loop2(lilia).map((img) => (
+                        <figure class="card">
+                            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+                        </figure>
+                    ))}
+                </div>
+                <div class="fade fade--left" aria-hidden="true"></div>
+                <div class="fade fade--right" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ページ内でCSSを確実に読みたい場合は head で <link> を忘れずに -->
+</section>
