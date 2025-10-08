@@ -19,10 +19,16 @@ html, body {
 }
 
 body {
-    /* 微細ノイズ（/public/images/bg_noise.webp を敷く） */
+    /* 微細ノイズ（/public/images/bg_noise.webp を敷く） 
     background-image: url("/images/bg_noise.webp");
     background-repeat: repeat;
-    background-size: auto;
+    background-size: auto;　*/
+    background-color: #1b1b1bff; /* 完全黒より少し明るめ */
+    background-image: url("/images/bg_noise.webp");
+    background-repeat: repeat;
+    background-size: 600px 600px; /* 粒感が強すぎる場合は大きめに */
+    background-attachment: fixed; /* スクロールしても質感を保つ */
+    color: #fff;
 }
 
 a {

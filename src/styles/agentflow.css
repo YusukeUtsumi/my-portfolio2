@@ -1,0 +1,98 @@
+/* AgentFlow Section */
+.af-section {
+    position: relative;
+    padding: 8rem 0 6rem;
+    background: #000;
+}
+
+.af-section .af-container {
+    width: min(1200px, 92vw);
+    margin: 0 auto;
+    display: grid;
+    gap: 3rem;
+}
+
+/* PC：画像(左)・テキスト(右)を明示 */
+@media (min-width: 960px) {
+    .af-section .af-container {
+        grid-template-columns: 1fr 1.1fr;              /* SilentGuard と対称：画像側=1fr, テキスト側=1.1fr */
+        grid-template-areas: "panel head";
+        align-items: center;
+    }
+}
+
+/* エリア割当 */
+.af-section .panel-wrap { grid-area: panel; }
+.af-section .af-head    { grid-area: head;  }
+
+/* 左：画像エリア（SilentGuard と同条件） */
+.af-section .panel-wrap {
+    position: relative;
+    width: 100%;                 /* ★ 列幅いっぱい */
+    justify-self: start;         /* 左寄せ（PC時） */
+}
+
+.af-section .device-frame {
+    aspect-ratio: 16 / 9;        /* SilentGuard と同じ */
+    width: 100%;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 1px rgba(255,255,255,.06);
+}
+
+.af-section .af-glow {
+    position: absolute;
+    inset: -18% -10% auto -10%;
+    height: 56%;
+    background: radial-gradient(60% 80% at 20% 20%, rgba(180,100,255,.4), rgba(0,0,0,0));
+    filter: blur(24px);
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.af-section .caption {
+    color: #8f8f8f;
+    font-size: .9rem;
+    margin-top: .8rem;
+}
+
+/* Carousel 内部（スコープ前置） */
+.af-section .sg-carousel { position: relative; width: 100%; height: 100%; }
+.af-section .sg-slide { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; opacity: 0; transition: opacity .6s ease; }
+.af-section .sg-slide img { width: 100%; height: 100%; object-fit: cover; }
+.af-section .sg-slide figcaption {
+    position: absolute; left: 12px; bottom: 10px;
+    font-size: .8rem; color: #e6dcff;
+    background: rgba(20,0,40,.35);
+    padding: .3rem .5rem; border-radius: .5rem; backdrop-filter: blur(6px);
+}
+.af-section .dots { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+.af-section .dots > button { width: 8px; height: 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.55); background: transparent; opacity: .6; }
+.af-section .dots > button.on { background: #fff; opacity: 1; }
+
+/* 右：テキスト */
+.af-section .af-head { max-width: 720px; }
+.af-section .af-head .eyebrow { letter-spacing: .14em; text-transform: uppercase; color: #9aa0a6; font-size: .8rem; }
+.af-section .af-head .title { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; color: #fff; margin: .4rem 0 1rem; }
+.af-section .af-head .lede { color: #bdbdbd; font-size: 1.05rem; }
+.af-section .af-head .bullets { margin: 1.2rem 0 1.6rem; color: #bdbdbd; display: grid; gap: .4rem; }
+.af-section .af-head .cta-row { display: flex; gap: .8rem; align-items: center; }
+.af-section .af-head .cta {
+    display: inline-block; padding: .7rem 1rem; border-radius: .75rem; font-weight: 600;
+    background: linear-gradient(90deg, #ffffffff, #ffffffff); color: #232323ff; box-shadow: 0 6px 20px rgba(120,80,255,.25);
+}
+.af-section .af-head .link { color: #bdbdbd; text-decoration: underline; text-underline-offset: 3px; }
+
+/* SP：縦積み（画像→テキスト） */
+@media (max-width: 959px) {
+    .af-section .af-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "panel"
+            "head";
+    }
+    .af-section .panel-wrap { justify-self: stretch; }
+}

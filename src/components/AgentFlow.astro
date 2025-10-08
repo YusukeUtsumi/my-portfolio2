@@ -1,0 +1,42 @@
+---
+import PanelCarousel from "./silentguard/PanelCarousel";
+import "../styles/agentflow.css";
+
+const slides = [
+    { src: "/images/agentflow_main.webp", caption: "エージェント全体像（YAML定義）" },
+    { src: "/images/agentflow_ui2.webp", caption: "実行フローとハンドオフ" }
+];
+---
+<section id="agentflow" class="af-section">
+    <div class="af-container">
+        <!-- 左：画像（固定） -->
+        <div class="panel-wrap">
+            <div class="af-glow" aria-hidden="true"></div>
+            <div class="device-frame">
+                <PanelCarousel client:visible slides={slides} />
+            </div>
+            <p class="caption">YAML一枚でAI・スクリプト・APIを連携する構成イメージ。</p>
+        </div>
+
+        <!-- 右：テキスト（固定） -->
+        <header class="af-head">
+            <p class="eyebrow">Automation Framework</p>
+            <h2 class="title">AgentFlow -v0.3</h2>
+            <p class="lede">
+                YAML一枚でエージェント群を記述し、<br />
+                LLM・RPA・外部APIをシームレスに連携。<br />
+                軽量・実務指向のマルチエージェント基盤。
+            </p>
+            <ul class="bullets">
+                <li>明示的なLLM活用構造（プロンプト/ツール/制約の分離）</li>
+                <li>RPA/スクリプト/外部APIのノード統合</li>
+                <li>OSS・SaaS両対応の拡張ポイント</li>
+            </ul>
+            <div class="cta-row">
+                <a href="https://github.com/YusukeUtsumi/agentflow/tree/release/v0.3" target="_blank" rel="noreferrer" class="cta">GitHubを見る</a>
+            </div>
+        </header>
+    </div>
+
+    <script type="module" src="/src/scripts/agentflow.ts"></script>
+</section>
