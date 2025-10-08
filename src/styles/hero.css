@@ -50,9 +50,9 @@
     background: linear-gradient(
         60deg,
         rgba(0,0,0,0) 30%,
-        rgba(180,100,255,.60) 43%,
+        rgba(255, 100, 245, 0.55) 43%,
         rgba(255, 193, 127, 0.35) 50%,
-        rgba(180,100,255,.65) 57%,
+        rgba(214, 100, 255, 0.50) 57%,
         rgba(0,0,0,0) 70%
     );
     transform: rotate(8deg) translate3d(0,0,0);

@@ -1,10 +1,14 @@
 /* =========================
-   SilentGuard Section
+    SilentGuard Section
    ========================= */
 .sg-section {
     position: relative;
     padding: 8rem 0 6rem;
-    background: #000;
+    background-color: #1b1b1bff; /* 完全黒より少し明るめ */
+    background-image: url("/images/bg_noise.webp");
+    background-repeat: repeat;
+    background-size: 600px 600px; /* 粒感が強すぎる場合は大きめに */
+    background-attachment: fixed;
 }
 .sg-container {
     width: min(1200px, 92vw);
