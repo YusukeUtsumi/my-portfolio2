@@ -1,193 +1,138 @@
-/* =========================
-    AI Talent — Film Stripes
-   ========================= */
+/* =============================
+   AI TALENT — 非対称レイアウト
+   ============================= */
 
-.ai-stripes {
-    background: #000;
-    padding: 6rem 0 4rem;
-    background-color: #1b1b1bff; /* 完全黒より少し明るめ */
-    background-image: url("/images/bg_noise.webp");
-    background-repeat: repeat;
-    background-size: 600px 600px; /* 粒感が強すぎる場合は大きめに */
-    background-attachment: fixed;
-}
-
-.ai-stripes .wrap {
-    width: min(1200px, 92vw);
-    margin: 0 auto;
-}
-
-.head .eyebrow {
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: #9aa0a6;
-    font-size: .8rem;
-}
-.head .title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.1;
-    color: #fff;
-    margin: .4rem 0 1rem;
-}
-.head .lede {
-    color: #bdbdbd;
-}
-
-/* ===== Stripes container ===== */
-.stripes {
-    margin-top: 2rem;
-    display: grid;
-    gap: 20px;
-}
-
-/* 2本の帯を用意（PC）。SPは1本に落とす */
-@media (min-width: 960px) {
-    .stripes {
-        grid-template-rows: 220px 220px;
-    }
-}
-@media (max-width: 959px) {
-    .stripes {
-        grid-template-rows: 220px;
-    }
-}
-
-/* ===== Stripe (band) ===== */
-.stripe {
+.ai-section {
     position: relative;
+    padding: clamp(48px, 7vw, 96px) min(4vw, 32px);
+    background: radial-gradient(1200px 800px at 50% -10%, rgba(255, 255, 255, 0.06), transparent 60%) #0f0f10;
     overflow: hidden;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.08);
-    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-    /* 影は浅め */
-    box-shadow: 0 12px 40px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
 }
 
-/* フィルム端の暗幕（端切れ防止＆集中力UP） */
-.fade {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 120px;
-    pointer-events: none;
-    z-index: 2;
+/* ヘッダ */
+.ai-head {
+    max-width: 1120px;
+    margin: 0 auto clamp(28px, 5vw, 56px);
 }
-.fade--left {
-    left: 0;
-    background: linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+.ai-head .eyebrow {
+    letter-spacing: 0.2em;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0 0 0.5rem;
 }
-.fade--right {
-    right: 0;
-    background: linear-gradient(270deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+.ai-title {
+    font-size: clamp(28px, 5.6vw, 52px);
+    line-height: 1.15;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
 }
-
-/* ===== Track (infinite marquee) ===== */
-.track {
-    display: flex;
-    gap: 16px; /* 少し余裕を持たせる */
-    width: max-content;
-    will-change: transform;
+.ai-sub {
+    margin: 0.6rem 0 0;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: clamp(0.92rem, 1.7vw, 1.05rem);
 }
-
-/* 画像カード：縦型1080×1920比率 */
-.card {
-    flex: 0 0 auto;
-    aspect-ratio: 8 / 9;   /* ← ★ここ重要！縦比率固定 */
-    height: 340px;          /* 帯全体の高さ（PC）をこれに合わせる */
-    overflow: hidden;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.08);
-    background: #0a0a0a;
-}
-.card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.ai-sub .en {
     display: block;
-    transform: scale(1.02);
-    transition: transform .4s ease;
-}
-.card:hover img {
-    transform: scale(1.05);
+    font-family: "Times New Roman", Times, serif;
+    font-style: italic;
+    color: rgba(245, 245, 245, 0.82);
+    margin-top: 0.25rem;
 }
 
-/* ===== Stripes container ===== */
-.stripes {
-    margin-top: 2.5rem;
+/* グリッド */
+.ai-grid {
+    max-width: 1200px;
+    margin: 0 auto;
     display: grid;
-    gap: 28px;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(16px, 3vw, 36px);
+    align-items: start;
 }
 
-@media (min-width: 960px) {
-    /* 9:16比率画像を2本並べるので縦を少し広げる */
-    .stripes {
-        grid-template-rows: 360px 360px;
+/* Risa */
+.risa {
+    position: relative;
+    align-self: center;
+}
+.risa img {
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    object-fit: cover;
+    filter: brightness(1.06) contrast(0.97);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 90px rgba(255, 190, 240, 0.12);
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s ease;
+}
+.risa img:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08) contrast(0.99);
+}
+.cap {
+    margin-top: 0.6rem;
+    color: rgba(255, 255, 255, 0.82);
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: left;
+}
+
+/* Lilia */
+.lilia {
+    display: grid;
+    grid-template-rows: 1fr 1fr auto;
+    gap: clamp(12px, 2.2vw, 22px);
+}
+.lilia-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    object-fit: cover;
+    opacity: 0.92;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.lilia-item img:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+.cap--lilia {
+    text-align: right;
+    color: rgba(230, 230, 230, 0.78);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .ai-head {
+        margin-bottom: clamp(18px, 4.2vw, 28px);
+    }
+    .ai-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .risa img {
+        border-radius: 16px;
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+    }
+    .lilia {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 10px;
+    }
+    .cap {
+        font-size: 0.85rem;
+    }
+    .cap--lilia {
+        grid-column: 1 / -1;
+        text-align: left;
+        margin-top: 0.35rem;
     }
 }
 
-@media (max-width: 959px) {
-    /* スマホ時は1本のみ、高さを縮める */
-    .stripes {
-        grid-template-rows: 280px;
-    }
-    .card {
-        height: 280px;
-    }
-}
-
-/* ===== アニメーションはそのままでOK ===== */
-.stripe--risa .track {
-    animation: stripe-move-right 28s linear infinite;
-}
-.stripe--lilia .track {
-    animation: stripe-move-left 32s linear infinite;
-}
-
-
-/* ホバーで一時停止（PC） */
-.stripe:hover .track {
-    animation-play-state: paused;
-}
-
-/* SPはタップで一時停止したい場合、JSで .paused を付与予定（CSS側も一応用意） */
-.stripe.paused .track {
-    animation-play-state: paused;
-}
-
-/* prefers-reduced-motion */
+/* モーション抑制 */
 @media (prefers-reduced-motion: reduce) {
-    .stripe .track {
+    * {
         animation: none !important;
+        transition: none !important;
     }
-}
-
-/* 無限マルキー（シームレスに見せるため、同じ並びを2回DOMに入れてある） */
-@keyframes stripe-move-right {
-    from { transform: translateX(-50%); }  /* ちょうど中間から始めると途切れにくい */
-    to   { transform: translateX(0%); }
-}
-@keyframes stripe-move-left {
-    from { transform: translateX(0%); }
-    to   { transform: translateX(-50%); }
-}
-
-/* ===== CTA ===== */
-.cta-row {
-    margin-top: 2rem;
-    display: flex;
-    gap: .8rem;
-    align-items: center;
-}
-.cta-row .cta {
-    display: inline-block;
-    padding: .7rem 1rem;
-    background: #fff;
-    color: #000;
-    border-radius: .75rem;
-    font-weight: 600;
-}
-.cta-row .link {
-    color: #bdbdbd;
-    text-decoration: underline;
-    text-underline-offset: 3px;
 }

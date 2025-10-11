@@ -70,37 +70,68 @@
     font-family: "Inter","Noto Sans JP",sans-serif;
 }
 
-/* タイトル全体 */
+/* Hero タイトル全体 */
 .hero-title {
     font-size: clamp(2rem, 5vw, 3.6rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.3;
+    text-align: center;
     text-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.55),   /* メインのドロップシャドウ */
-        0 0 12px rgba(0, 0, 0, 0.4);     /* ふんわり広がる補助 */
+        0 2px 6px rgba(0, 0, 0, 0.55),
+        0 0 12px rgba(0, 0, 0, 0.4);
 }
 
-/* メイン文字（span）を強調したい場合 */
+/* 日本語タイトル（詩的な光感） */
 .hero-title span {
     display: inline-block;
-    /*text-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.65),
-        0 0 20px rgba(0, 0, 0, 0.5); */
+    font-family: "Zen Old Mincho", "Noto Serif JP", serif;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: #fff;
     text-shadow:
-        0 0 10px rgba(253, 150, 255, 0.6),
-        0 2px 8px rgba(173, 248, 170, 0.6);
+        0 0 12px rgba(255, 130, 255, 0.45),
+        0 0 20px rgba(173, 255, 200, 0.3);
 }
 
-/* サブタイトル（小文字） */
+/* 英語サブタイトル（静かな余韻） */
 .hero-title small {
-    display: inline-block;
-    font-size: 0.45em;
-    font-weight: 400;
-    color: #e0e0e0;
+    display: block;
+    margin-top: 1.4rem;
+    font-size: 0.42em;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: 300;
+    color: rgba(240, 240, 240, 0.85);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    opacity: 0.92;
+    text-transform: none;
     text-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.6);
+        0 1px 4px rgba(0, 0, 0, 0.7),
+        0 0 8px rgba(255, 255, 255, 0.15);
 }
+
+/* 英語サブタイトルのフェードイン */
+.hero-title small {
+    animation: fadeInSubtitle 2.4s ease-out 0.8s both;
+}
+
+@keyframes fadeInSubtitle {
+    from {
+        opacity: 0;
+        transform: translateY(0.3rem);
+        filter: blur(2px);
+    }
+    to {
+        opacity: 0.92;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
 
 /* SP */
 @media (max-width: 960px) {

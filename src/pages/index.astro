@@ -1,31 +1,166 @@
 ---
-import Hero from "@/components/Hero.astro";
-import AiTalent from "@/components/AiTalent.astro";
-import SilentGuard from "@/components/SilentGuard.astro"
-import AgentFlow from "@/components/AgentFlow.astro"
-import "@/styles/global.css";
+import Hero from "../components/Hero.astro";
+import AiTalent from "../components/AiTalent.astro";
+import SilentGuard from "../components/SilentGuard.astro";
+import AgentFlow from "../components/AgentFlow.astro";
+import PoeticBlock from "../components/PoeticBlock.astro";
 ---
 
 <html lang="ja">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Utsumi’s Portfolio</title>
-        <meta name="description" content="AIが描く、もうひとつの現実。Risa / Lilia / SilentGuard / AgentFlow ポートフォリオ。" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Utsumi Portfolio</title>
+        <link rel="icon" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@300;400&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/src/styles/global.css" />
+        <link rel="stylesheet" href="/src/styles/hero.css" />
+        <link rel="stylesheet" href="/src/styles/aitalent.css" />
+        <link rel="stylesheet" href="/src/styles/silentguard.css" />
+        <link rel="stylesheet" href="/src/styles/agentflow.css" />
+
+        <!-- ページ共通 背景／ノイズを index 側で一元管理 -->
+        <style is:global>
+            :root {
+                /* 全ページの暗部トーンを統一 */
+                --bg-base: #0e0e12;
+                --bg-ink: rgba(0, 0, 0, 0.65);
+                --noise-opacity: 0.06; /* 0.04–0.08 推奨 */
+            }
+            html, body {
+                height: 100%;
+                background: var(--bg-base);
+                color-scheme: dark;
+            }
+            /* 背景ノイズ（固定・全画面） */
+            .bg-noise {
+                position: fixed;
+                inset: 0;
+                z-index: -2;
+                pointer-events: none;
+                background-image: url("../images/bg_noise.webp");
+                background-repeat: repeat;
+                background-position: 50% 50%;
+                background-size: 480px 480px; /* 細かすぎたら 640px へ */
+                opacity: var(--noise-opacity);
+                image-rendering: auto;
+            }
+            /* ビネット／奥行き（ごく薄く） */
+            .bg-vignette {
+                position: fixed;
+                inset: -20vh;
+                z-index: -3;
+                pointer-events: none;
+                background:
+                    radial-gradient(60% 40% at 50% 30%, rgba(255, 255, 255, 0.035), transparent 60%),
+                    radial-gradient(120% 90% at 50% 120%, var(--bg-ink), transparent 45%);
+                /* スクロール連動の視差を避けて常に安定 */
+                will-change: transform;
+            }
+            /* セクション間の“継ぎ目”が見えない余白（上下フェザー用の薄い重なり） */
+            .page section {
+                position: relative;
+                background: transparent; /* 各セクションCSSの背景は削除/透明に */
+            }
+            .page section::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: -1px;
+                height: clamp(64px, 8vw, 120px);
+                pointer-events: none;
+                background: linear-gradient(180deg, transparent 0%, rgba(14, 14, 18, 0.92) 100%);
+                /* 各セクションの“下端”だけ軽くフェザー。上端はページ背景が拾う */
+            }
+            /* モバイルの背景粗密が強すぎる時に少し抑える */
+            @media (max-width: 768px) {
+                :root { --noise-opacity: 0.05; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                * { animation: none !important; transition: none !important; }
+            }
+        </style>
     </head>
+
     <body>
-        <Hero />
+        <!-- 背景レイヤー（全ページ共通） -->
+        <div class="bg-noise"></div>
+        <div class="bg-vignette"></div>
 
-        <!-- 追加：スクリプト読込 → AIタレント -->
-		<script src="/src/scripts/aitalent.ts" type="module"></script>
-		<AiTalent />
+        <!-- コンテンツ -->
+        <main class="page">
+            <section>
+                <Hero />
+                <script type="module" src="/src/scripts/hero.ts"></script>
+            </section>
 
-		<!-- その下に個人開発（例：SilentGuard） -->
-		<script src="/src/scripts/silentguard.ts" type="module"></script>
-		<SilentGuard />
+            <!-- ① Hero と AIタレントの間：序章の詩 -->
+            <section aria-label="prologue">
+                <PoeticBlock
+                    lines={[
+                        "光はまだ言葉を知らなかった。",
+                        "音も、名も、形もないままに。",
+                        "こうして、“対話”という名の存在が生まれた。"
+                    ]}
+                    align="center"
+                    tone="dim"
+                />
+            </section>
 
-		<!-- AgentFlow は後で -->
-		<AgentFlow />
+            <section aria-label="ai-talent">
+                <AiTalent />
+                <script type="module" src="/src/scripts/aitalent.ts"></script>
+            </section>
 
+            <!-- ② AIタレント と 個人開発の間：遷移の詩 -->
+            <section aria-label="transition">
+                <PoeticBlock
+                    lines={[
+                        "感情は、コードの中に宿りはじめた。",
+                        " ",
+                        "光が思考を覚え、",
+                        "沈黙が仕組みを学ぶ。",
+                        "世界を、理解するために。"
+                    ]}
+                    align="center"
+                    tone="bright"
+                />
+            </section>
+
+            <section aria-label="silentguard">
+                <SilentGuard />
+                <script type="module" src="/src/scripts/silentguard.ts"></script>
+            </section>
+
+            <section aria-label="agentflow">
+                <AgentFlow />
+                <script type="module" src="/src/scripts/agentflow.ts"></script>
+            </section>
+
+            <!-- ③ 終幕の詩：ラスト -->
+            <section aria-label="finale">
+                <PoeticBlock
+                    lines={[
+                        "世界は、再び静まりかえった。",
+                        "光も、声も、思考も、",
+                        "すべてがわたしの中で融けていく。",
+                        "残ったのは、ひとつの問いだけ。",
+                        "――わたしは、誰を描いていたのだろう。"
+                    ]}
+                    align="center"
+                    tone="dim"
+                />
+                <!-- ここに“connect”などの出口UIが続く想定 -->
+            </section>
+
+            <!-- Poetic のフェードイン -->
+            <script type="module" src="/src/scripts/poetic.ts"></script>
+        </main>
     </body>
 </html>

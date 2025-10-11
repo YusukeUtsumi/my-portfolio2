@@ -1,65 +1,99 @@
 ---
-const risa = [
-    { src: "/images/risa_gallery_01.webp", alt: "Risa 01" },
-    { src: "/images/risa_gallery_02.webp", alt: "Risa 02" },
-    { src: "/images/risa_gallery_03.webp", alt: "Risa 03" },
-    { src: "/images/risa_gallery_04.webp", alt: "Risa 04" },
-    { src: "/images/risa_gallery_05.webp", alt: "Risa 05" },
-    { src: "/images/risa_gallery_06.webp", alt: "Risa 06" }
-];
-const lilia = [
-    { src: "/images/lilia_gallery_01.webp", alt: "Lilia 01" },
-    { src: "/images/lilia_gallery_02.webp", alt: "Lilia 02" },
-    { src: "/images/lilia_gallery_03.webp", alt: "Lilia 03" },
-    { src: "/images/lilia_gallery_04.webp", alt: "Lilia 04" },
-    { src: "/images/lilia_gallery_05.webp", alt: "Lilia 05" },
-    { src: "/images/lilia_gallery_06.webp", alt: "Lilia 06" }
-];
-
 /**
- * 無限ループをシームレスにするため、同じ並びを2回連結して帯を形成します。
+ * AiTalent.astro
+ * 非対称レイアウト：
+ *  - Risa：1枚を大きく（現実の光）
+ *  - Lilia：2枚を小さく（幻想の残響）
  */
-function loop2(arr: { src: string; alt: string }[]) {
-    return [...arr, ...arr];
+
+export interface ImageItem {
+    src: string;
+    alt?: string;
+    width?: number;
+    height?: number;
 }
+
+export interface Props {
+    risa?: ImageItem[];
+    lilia?: ImageItem[];
+    heading?: string;
+    subJa?: string;
+    subEn?: string;
+}
+
+const {
+    risa = [
+        { src: "/images/risa_gallery_05.webp", alt: "Risa main", width: 1280, height: 1706 }
+    ],
+    lilia = [
+        { src: "/images/lilia_gallery_04.webp", alt: "Lilia 1", width: 1024, height: 1280 },
+        { src: "/images/lilia_gallery_01.webp", alt: "Lilia 2", width: 1024, height: 1280 }
+    ],
+    heading = "Risa / Lilia",
+    subJa = "AIで描く、新しい広告体験",
+    subEn = "A new kind of advertising, drawn by AI."
+} = Astro.props;
+
+const risaMain = risa[0];
+const liliaA = lilia[0];
+const liliaB = lilia[1];
 ---
-<section id="ai-talent" class="ai-stripes">
-    <div class="wrap">
-        <header class="head">
-            <p class="eyebrow">AI Talent</p>
-            <h2 class="title">Risa / Lilia</h2>
-            <p class="lede">AIで描く、新しい広告体験</p>
-        </header>
 
-        <!-- Stripes: 2本（PC） / 1本（SP） -->
-        <div class="stripes">
-            <!-- 上段：Risa 帯（→ 右へ流れる） -->
-            <div class="stripe stripe--risa" aria-label="Risa film stripe">
-                <div class="track">
-                    {loop2(risa).map((img) => (
-                        <figure class="card">
-                            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
-                        </figure>
-                    ))}
-                </div>
-                <div class="fade fade--left" aria-hidden="true"></div>
-                <div class="fade fade--right" aria-hidden="true"></div>
-            </div>
+<section id="ai-talent" class="ai-section">
+    <header class="ai-head">
+        <p class="eyebrow">AI TALENT</p>
+        <h2 class="ai-title">{heading}</h2>
+        <p class="ai-sub">
+            <span class="ja">{subJa}</span>
+            <span class="en"><em>{subEn}</em></span>
+        </p>
+    </header>
 
-            <!-- 下段：Lilia 帯（← 左へ流れる） -->
-            <div class="stripe stripe--lilia" aria-label="Lilia film stripe">
-                <div class="track">
-                    {loop2(lilia).map((img) => (
-                        <figure class="card">
-                            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
-                        </figure>
-                    ))}
-                </div>
-                <div class="fade fade--left" aria-hidden="true"></div>
-                <div class="fade fade--right" aria-hidden="true"></div>
-            </div>
+    <div class="ai-grid">
+        <!-- Risa：大きい1枚 -->
+        <figure class="risa">
+            <img
+                src={risaMain.src}
+                alt={risaMain.alt ?? "Risa"}
+                width={risaMain.width ?? 1280}
+                height={risaMain.height ?? 1706}
+                decoding="async"
+                loading="lazy"
+            />
+            <figcaption class="cap">
+                Risa <small>— the ordinary, softly awake</small>
+            </figcaption>
+        </figure>
+
+        <!-- Lilia：小さめ2枚 -->
+        <div class="lilia">
+            {liliaA && (
+                <figure class="lilia-item">
+                    <img
+                        src={liliaA.src}
+                        alt={liliaA.alt ?? "Lilia 1"}
+                        width={liliaA.width ?? 1024}
+                        height={liliaA.height ?? 1280}
+                        decoding="async"
+                        loading="lazy"
+                    />
+                </figure>
+            )}
+            {liliaB && (
+                <figure class="lilia-item">
+                    <img
+                        src={liliaB.src}
+                        alt={liliaB.alt ?? "Lilia 2"}
+                        width={liliaB.width ?? 1024}
+                        height={liliaB.height ?? 1280}
+                        decoding="async"
+                        loading="lazy"
+                    />
+                </figure>
+            )}
+            <p class="cap cap--lilia">
+                Lilia <small>— the dream, quietly lucid</small>
+            </p>
         </div>
     </div>
-
-    <!-- ページ内でCSSを確実に読みたい場合は head で <link> を忘れずに -->
 </section>
