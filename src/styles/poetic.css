@@ -4,14 +4,23 @@ Poetic interlude block
 .poetic {
     position: relative;
     padding: 6rem 0;
-    background: transparent; /* 背景はbodyの微ノイズを活かす */
     overflow: hidden;
-    /* === 背景設定（SilentGuardと同じトーン） === */
-    background-color: #0f0f10;           /* 完全黒より少し明るめ */
+
+    background-color: #0f0f10;
     background-image: url("/images/bg_noise.webp");
     background-repeat: repeat;
-    background-size: 600px 600px;          /* ノイズ粒度 */
-    background-attachment: fixed;          /* スクロールしても質感保持 */
+    background-size: 600px 600px;
+
+    /* ← まずは fixed を一旦オフに（段差の原因になりやすい） */
+    background-attachment: scroll;
+
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* 疑似要素のブレンドを確実にする */
+    isolation: isolate;
 }
 
 .po-wrap {
@@ -44,17 +53,39 @@ Poetic interlude block
         0 0 12px rgba(0,0,0,.35);
 }
 
-/* うっすら区切り（上と下に微グラデの幕） */
+/* 上下のうっすら幕は作り直し（上だけ長めに“かぶせる”） */
 .poetic::before,
 .poetic::after {
     content: "";
     position: absolute;
     left: 0; right: 0;
-    height: 48px;
     pointer-events: none;
+    z-index: 2;
 }
-.poetic::before { top: 0; background: linear-gradient(#00000000, rgba(0,0,0,.2)); }
-.poetic::after  { bottom: 0; background: linear-gradient(rgba(0,0,0,.2), #00000000); }
+
+/* 上：ヒーロー側に 96px ほど食い込ませて滑らかに接続 */
+.poetic::before {
+    top: -96px;          /* ← ここがポイント：上にせり上げる */
+    height: 160px;
+    background: linear-gradient(
+        to bottom,
+        #0f0f10 0%,               /* 詩セクションの地色で上から“覆う” */
+        rgba(15,15,16,0.85) 35%,
+        rgba(15,15,16,0) 100%
+    );
+}
+
+/* 下：より長く・濃くして下セクションにかぶせる */
+.poetic::after {
+    bottom: -80px;             /* ← 下にせり下げて“上から覆う” */
+    height: 180px;             /* ← 以前より長め */
+    background: linear-gradient(
+        to bottom,
+        rgba(15,15,16,0.55) 0%,
+        rgba(15,15,16,0.35) 35%,
+        rgba(15,15,16,0) 100%
+    );
+}
 
 /* うっすら光るグロー（色は --po-glow で可変） */
 .po-glow {
