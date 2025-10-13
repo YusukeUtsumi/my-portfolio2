@@ -1,13 +1,26 @@
 ---
-import PanelCarousel from "./silentguard/PanelCarousel";
-const slides = [
-    { src: "/images/silentguard_main.webp", caption: "メインログビュー" },
-    { src: "/images/silentguard_ui2.webp", caption: "隔離後のワークフロー" }
-    // 必要なら3枚目を追加：{ src: "/images/agentflow_main.webp", caption: "（デモ）イベント概要" }
+const bullets = [
+    "8KBコア / 135KB exe（PoC）",
+    "隔離後は他社AVでダブルチェック",
+    "ETW/FileSystemWatcher による低レイテンシ検知",
 ];
 ---
 <section id="silentguard" class="sg-section">
     <div class="sg-container">
+        <!-- 可視領域先頭で盾SVGを表示（モバイルでは上、PCでは右カラム） -->
+        <div class="visual-wrap">
+            <div class="glow" aria-hidden="true"></div>
+            <figure class="shield-frame" aria-label="SilentGuard emblem">
+                <img
+                    src="/images/SilentGuard.svg"
+                    alt="SilentGuard Shield Logo"
+                    class="shield-svg"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </figure>
+        </div>
+
         <header class="sg-head">
             <p class="eyebrow">Security Utility</p>
             <h2 class="title">SilentGuard</h2>
@@ -15,20 +28,18 @@ const slides = [
                 Windows Defender と ETW を活用した、<span>“静かに効く”</span>軽量セキュリティモニタ。
             </p>
             <ul class="bullets">
-                <li>8KBコア / 135KB exe（PoC）</li>
-                <li>隔離後は他社AVでダブルチェック</li>
-                <li>ETW/FileSystemWatcher による低レイテンシ検知</li>
+                {bullets.map((b) => <li>{b}</li>)}
             </ul>
             <div class="cta-row">
-                <a href="https://github.com/YusukeUtsumi/SilentGuard" target="_blank" rel="noreferrer" class="cta">GitHubを見る</a>
+                <a
+                    href="https://github.com/YusukeUtsumi/SilentGuard"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="cta"
+                >
+                    GitHubを見る
+                </a>
             </div>
         </header>
-
-        <div class="panel-wrap">
-            <div class="glow" aria-hidden="true"></div>
-            <div class="device-frame">
-                <PanelCarousel client:visible slides={slides} />
-            </div>
-        </div>
     </div>
 </section>

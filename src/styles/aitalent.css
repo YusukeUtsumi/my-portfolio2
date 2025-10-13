@@ -1,98 +1,43 @@
 /* =============================
-    AI TALENT — 非対称レイアウト
-   ============================= */
-
+AI TALENT — Risa & Lilia
+============================= */
 .ai-section {
     position: relative;
     padding: clamp(48px, 7vw, 96px) min(4vw, 32px);
-
-    /* poetic と同じ地色＋ノイズを“第一レイヤー”に */
-    background-color: #0f0f10;
-    background-image:
-        url("/images/bg_noise.webp"),
-        radial-gradient(1200px 800px at 50% -6%, rgba(15,15,16,0.85) 0%, rgba(15,15,16,0) 60%);
-    background-repeat: repeat, no-repeat;
-    background-size: 600px 600px, cover;
-    background-attachment: scroll, scroll;
-
+    background: #0f0f10; /* 単色化 */
     overflow: hidden;
-    isolation: isolate;
-
-    /* もし端末差で1px段が出る時の最終手段（必要時のみ有効化）
-    border-top: 1px solid rgba(255,255,255,0.02);
-    */
 }
 
-/* 上：詩セクション側の境界を滑らかに重ねる */
-.ai-section::before {
-    content: "";
-    position: absolute;
-    top: -80px;     /* ← 段の位置より上にせり上げる */
-    left: 0;
-    right: 0;
-    height: 200px;  /* ← 長めに覆う */
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(
-        to bottom,
-        #0f0f10 0%,
-        rgba(15,15,16,0.9) 28%,
-        rgba(15,15,16,0.6) 55%,
-        rgba(15,15,16,0) 100%
-    );
-}
-
-/* 下：次の詩セクションとの境界を上から“被せる” */
-.ai-section::after {
-    content: "";
-    position: absolute;
-    bottom: -80px;  /* ← 下にせり下げて被せる */
-    left: 0;
-    right: 0;
-    height: 220px;  /* ← 負数ではなく、しっかり長さを指定 */
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(
-        to bottom,
-        rgba(15,15,16,0.55) 0%,
-        rgba(15,15,16,0.35) 40%,
-        rgba(15,15,16,0) 100%
-    );
-}
-
-
-/* ヘッダ */
 .ai-head {
     max-width: 1120px;
     margin: 0 auto clamp(28px, 5vw, 56px);
+    text-align: center;
 }
+
 .ai-head .eyebrow {
     letter-spacing: 0.2em;
     font-size: 0.72rem;
     color: rgba(255, 255, 255, 0.55);
-    margin: 0 0 0.5rem;
+    margin-bottom: 0.5rem;
 }
+
 .ai-title {
     font-size: clamp(28px, 5.6vw, 52px);
     line-height: 1.15;
-    margin: 0;
     color: #fff;
-    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
-}
-.ai-sub {
-    margin: 0.6rem 0 0;
-    color: rgba(255, 255, 255, 0.76);
-    font-size: clamp(0.92rem, 1.7vw, 1.05rem);
-}
-.ai-sub .en {
-    display: block;
-    font-family: "Times New Roman", Times, serif;
-    font-style: italic;
-    color: rgba(245, 245, 245, 0.82);
-    margin-top: 0.25rem;
+    text-shadow:
+        0 0 12px rgba(255,255,255,0.12),
+        0 0 26px rgba(255,180,250,0.25);
 }
 
-/* グリッド */
+.ai-sub {
+    margin-top: 0.6rem;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: clamp(0.92rem, 1.7vw, 1.05rem);
+    font-style: italic;
+}
+
+/* グリッド配置 */
 .ai-grid {
     max-width: 1200px;
     margin: 0 auto;
@@ -102,89 +47,20 @@
     align-items: start;
 }
 
-/* Risa */
-.risa {
-    position: relative;
-    align-self: center;
-}
-.risa img {
+/* Risa / Lilia */
+.risa img, .lilia-item img {
     width: 100%;
     height: auto;
-    border-radius: 18px;
+    border-radius: 16px;
     object-fit: cover;
-    filter: brightness(1.06) contrast(0.97);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 90px rgba(255, 190, 240, 0.12);
-    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s ease;
-}
-.risa img:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.08) contrast(0.99);
-}
-.cap {
-    margin-top: 0.6rem;
-    color: rgba(255, 255, 255, 0.82);
-    font-family: "Times New Roman", Times, serif;
-    font-size: 0.92rem;
-    line-height: 1.45;
-    text-align: left;
+    filter: brightness(1.05);
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 80px rgba(255,180,250,0.1);
+    transition: transform .6s ease, filter .6s ease;
 }
 
-/* Lilia */
-.lilia {
-    display: grid;
-    grid-template-rows: 1fr 1fr auto;
-    gap: clamp(12px, 2.2vw, 22px);
-}
-.lilia-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 14px;
-    object-fit: cover;
-    opacity: 0.92;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.lilia-item img:hover {
-    opacity: 1;
-    transform: translateY(-2px);
-}
-.cap--lilia {
-    text-align: right;
-    color: rgba(230, 230, 230, 0.78);
-}
-
-/* モバイル対応 */
-@media (max-width: 768px) {
-    .ai-head {
-        margin-bottom: clamp(18px, 4.2vw, 28px);
-    }
-    .ai-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    .risa img {
-        border-radius: 16px;
-        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
-    }
-    .lilia {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto;
-        gap: 10px;
-    }
-    .cap {
-        font-size: 0.85rem;
-    }
-    .cap--lilia {
-        grid-column: 1 / -1;
-        text-align: left;
-        margin-top: 0.35rem;
-    }
-}
-
-/* モーション抑制 */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation: none !important;
-        transition: none !important;
-    }
+.risa img:hover, .lilia-item img:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.08);
 }

@@ -1,41 +1,49 @@
 ---
-import PanelCarousel from "./silentguard/PanelCarousel";
 import "../styles/agentflow.css";
 
-const slides = [
-    { src: "/images/agentflow_main.webp", caption: "エージェント全体像（YAML定義）" },
-    { src: "/images/agentflow_ui2.webp", caption: "実行フローとハンドオフ" }
+const bullets = [
+    "YAML一枚でワークフロー/エージェントを定義",
+    "LLM・RPA・外部APIをシームレス連携",
+    "明示的なツール呼び出しと制約管理",
 ];
 ---
 <section id="agentflow" class="af-section">
     <div class="af-container">
-        <!-- 左：画像（固定） -->
-        <div class="panel-wrap">
+        <!-- 左：SVG（PC）／上：SVG（SP） -->
+        <div class="visual-wrap">
             <div class="af-glow" aria-hidden="true"></div>
-            <div class="device-frame">
-                <PanelCarousel client:visible slides={slides} />
-            </div>
+            <figure class="af-frame" aria-label="AgentFlow emblem">
+                <img
+                    src="/images/AgentFlow.svg"
+                    alt="AgentFlow Orchestration"
+                    class="af-svg"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </figure>
         </div>
 
-        <!-- 右：テキスト（固定） -->
+        <!-- 右：テキスト（PC）／下：テキスト（SP） -->
         <header class="af-head">
             <p class="eyebrow">Automation Framework</p>
-            <h2 class="title">AgentFlow -v0.3</h2>
+            <h2 class="title">AgentFlow</h2>
             <p class="lede">
-                YAML一枚でエージェント群を記述し、<br />
-                LLM・RPA・外部APIをシームレスに連携。<br />
-                軽量・実務指向のマルチエージェント基盤。
+                フロー定義はYAMLに集約。<br />
+                LLM・スクリプト・APIを<span>“働かせる”</span>ための軽量基盤。
             </p>
             <ul class="bullets">
-                <li>明示的なLLM活用構造（プロンプト/ツール/制約の分離）</li>
-                <li>RPA/スクリプト/外部APIのノード統合</li>
-                <li>OSS・SaaS両対応の拡張ポイント</li>
+                {bullets.map((b) => <li>{b}</li>)}
             </ul>
             <div class="cta-row">
-                <a href="https://github.com/YusukeUtsumi/agentflow/tree/release/v0.3" target="_blank" rel="noreferrer" class="cta">GitHubを見る</a>
+                <a
+                    href="https://github.com/YusukeUtsumi/agentflow/tree/release/v0.3"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="cta"
+                >
+                    GitHubを見る
+                </a>
             </div>
         </header>
     </div>
-
-    <script type="module" src="/src/scripts/agentflow.ts"></script>
 </section>
