@@ -1,7 +1,23 @@
+/* ===== Base ===== */
 .hero {
     position: relative;
-    background: #000 url('/images/bg_noise.webp') center/auto repeat;
+    background: #0f0f10 url('/images/bg_noise.webp') center/auto repeat;
     overflow: hidden;
+}
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    position: relative;
+    z-index: 6;
+    color: #fff;
+
+    /* ★ 追加：立体的で柔らかい光のシャドウ */
+    filter:
+        drop-shadow(0 2px 8px rgba(0,0,0,.60))     /* 立体影 */
+        drop-shadow(0 0 12px rgba(255,255,255,.22))/* 柔らか発光 */
+        drop-shadow(0 0 22px rgba(215, 130, 255, 0.39));/* 薄い紫の後光 */
 }
 .hero-wrap {
     position: relative;
@@ -10,130 +26,153 @@
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
     min-height: clamp(520px, 70vh, 860px);
+    perspective: 1000px;
+    --mx: 0;
+    --my: 0;
+    --intensity: 0.85; /* 光量の基準（TSで緩やかに変化） */
 }
-.hero-left, .hero-right { position: relative; }
-.hero-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-left, .hero-right {
+    position: relative;
+}
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
 
-/* キャッチ */
+/* ===== Center Text ===== */
 .hero-content {
     position: absolute;
     inset: 0;
     display: grid;
     place-items: center;
     text-align: center;
-    z-index: 3;
+    z-index: 5;
     color: #fff;
     font-family: "Inter","Noto Sans JP",sans-serif;
 }
-.hero-title { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
-.hero-title small { font-size: 0.45em; font-weight: 400; color: #bdbdbd; }
-.hero-subtitle { margin-top: 1rem; font-size: clamp(1rem,2vw,1.25rem); color: #bdbdbd; }
-.hero-subtitle span { color: #fff; }
-
-/* Risa グロー（スクロールで出る） */
-.risa-glow {
-    position: absolute; inset: 0;
-    background: radial-gradient(60% 80% at 20% 40%, rgba(160,200,255,.5), rgba(0,0,0,0));
-    filter: blur(28px);
-    mix-blend-mode: screen;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* 紫フレア（常時薄く出す→“見えない”事故を防ぐため少し濃いめ） */
-.hero-flare {
-    position: absolute; inset: -20% -10% -20% -10%;
-    pointer-events: none; mix-blend-mode: screen;
-    opacity: .65; /* ← ここを少し上げておく（見え方に応じて .30〜.50 で調整） */
-    filter: blur(18px) saturate(200%);
-    background: linear-gradient(
-        60deg,
-        rgba(0,0,0,0) 30%,
-        rgba(255, 100, 245, 0.55) 43%,
-        rgba(255, 193, 127, 0.35) 50%,
-        rgba(214, 100, 255, 0.50) 57%,
-        rgba(0,0,0,0) 70%
-    );
-    transform: rotate(8deg) translate3d(0,0,0);
-    z-index: 2;
-}
-
-.hero-content {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    z-index: 3;
-    color: #fff;
-    font-family: "Inter","Noto Sans JP",sans-serif;
-}
-
-/* Hero タイトル全体 */
 .hero-title {
     font-size: clamp(2rem, 5vw, 3.6rem);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    text-align: center;
-    text-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.55),
-        0 0 12px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 6px rgba(0,0,0,.55), 0 0 12px rgba(0,0,0,.4);
 }
-
-/* 日本語タイトル（詩的な光感） */
 .hero-title span {
     display: inline-block;
-    font-family: "Zen Old Mincho", "Noto Serif JP", serif;
+    font-family: "Zen Old Mincho","Noto Serif JP",serif;
     font-weight: 300;
-    letter-spacing: 0.04em;
+    letter-spacing: .04em;
     line-height: 1.45;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    color: #fff;
+    color: #ffffff;
     text-shadow:
-        0 0 12px rgba(255, 130, 255, 0.45),
-        0 0 20px rgba(173, 255, 200, 0.3);
+        0 0 10px rgba(200,170,255,.28),
+        0 0 18px rgba(140,220,255,.18);
 }
-
-/* 英語サブタイトル（静かな余韻） */
 .hero-title small {
     display: block;
     margin-top: 1.4rem;
-    font-size: 0.42em;
-    font-family: "Times New Roman", Times, serif;
+    font-size: .42em;
+    font-family: "Times New Roman",Times,serif;
     font-weight: 300;
-    color: rgba(240, 240, 240, 0.85);
-    letter-spacing: 0.05em;
+    color: rgba(240,240,240,.88);
+    letter-spacing: .05em;
     line-height: 1.6;
-    opacity: 0.92;
-    text-transform: none;
-    text-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.7),
-        0 0 8px rgba(255, 255, 255, 0.15);
+    opacity: .92;
+    text-shadow: 0 1px 4px rgba(0,0,0,.7), 0 0 8px rgba(255,255,255,.15);
+    animation: fadeInSubtitle 2.2s ease-out .6s both;
 }
-
-/* 英語サブタイトルのフェードイン */
-.hero-title small {
-    animation: fadeInSubtitle 2.4s ease-out 0.8s both;
-}
-
 @keyframes fadeInSubtitle {
-    from {
-        opacity: 0;
-        transform: translateY(0.3rem);
-        filter: blur(2px);
-    }
-    to {
-        opacity: 0.92;
-        transform: translateY(0);
-        filter: blur(0);
-    }
+    from { opacity: 0; transform: translateY(.3rem); filter: blur(2px); }
+    to   { opacity: .92; transform: translateY(0); filter: blur(0); }
 }
 
+/* ===== Orbs (軽量・上品) ===== */
+.orbs {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    transform: translate3d(calc(var(--mx)*6px), calc(var(--my)*4px), 0);
+    will-change: transform;
+}
 
-/* SP */
+/* 画面全体をやさしく満たすハゼ光（超軽量） */
+.orbs::before {
+    content: "";
+    position: absolute;
+    inset: -12%;
+    background:
+        radial-gradient(60% 50% at 30% 40%, rgba(255, 211, 160, 0.32), rgba(143, 70, 136, 0.08) 75%),
+        radial-gradient(55% 45% at 70% 55%, rgba(244, 160, 255, 0.38), rgba(107, 70, 143, 0.18) 68%);
+    filter: blur(14px);
+    opacity: var(--intensity, .85);
+    mix-blend-mode: screen;
+}
+
+.orb {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    width: var(--sz);
+    height: var(--sz);
+    margin-left: calc(var(--sz) * -0.5);
+    margin-top: calc(var(--sz) * -0.5);
+    border-radius: 50%;
+    opacity: calc(var(--a) * var(--intensity));
+    background:
+        radial-gradient(circle at 35% 35%,
+            hsla(var(--h), 85%, 80%, .95) 0%,     /* ← 0.9→0.95 で見え方UP */
+            hsla(var(--h), 85%, 70%, .50) 22%,
+            hsla(var(--h), 85%, 60%, .38) 46%,
+            rgba(0,0,0,0) 70%);
+    filter: blur(8px);      /* ← 8px だけ薄くぼかす（負荷は軽い） */
+    will-change: transform, opacity, filter;
+    animation:
+        orb-float calc(var(--d1, 14s) / var(--spd)) ease-in-out infinite alternate,
+        orb-pulse calc(var(--d2, 20s) / var(--spd)) ease-in-out infinite;
+}
+
+/* 自動生成する薄粒（PCのみ） */
+.orb--tiny {
+    filter: blur(8px);
+    opacity: calc(var(--a, .10) * var(--intensity));
+    animation:
+        orb-float calc(var(--d1, 18s) / var(--spd)) ease-in-out infinite alternate,
+        orb-pulse calc(var(--d2, 26s) / var(--spd)) ease-in-out infinite;
+}
+@media (min-width: 1100px) {
+    .hero-wrap { --spd: 1.65; } /* ★ PCは全体早め（約1.45倍速） */
+}
 @media (max-width: 960px) {
-    .hero-wrap { grid-template-columns: 1fr; min-height: clamp(440px, 64vh, 760px); }
+    .hero-wrap { --spd: 1.0; }  /* SPは現状の速度を維持 */
+}
+
+/* 浮遊（ゆっくり流れる、方向は --k で反転） */
+@keyframes orb-float {
+    0%   { transform: translate3d(0px, 0px, 0) scale(1); }
+    100% { transform: translate3d(calc(var(--k, 1) * 26px), -18px, 0) scale(1.05); } /* ← 18→26px程度へ */
+}
+/* 呼吸（光量の僅かな上下） */
+@keyframes orb-pulse {
+    0%   { opacity: calc(var(--a) * var(--intensity) * .92); }
+    50%  { opacity: calc(var(--a) * var(--intensity) * 1.08); }
+    100% { opacity: calc(var(--a) * var(--intensity) * .95); }
+}
+
+/* モーション軽減 */
+@media (prefers-reduced-motion: reduce) {
+    .orb { animation: none; opacity: calc(var(--a) * .7); }
+}
+
+/* Mobile：光量少し抑える＆列を1本 */
+@media (max-width: 960px) {
+    .hero-wrap {
+        grid-template-columns: 1fr;
+        min-height: clamp(440px, 64vh, 760px);
+        --intensity: .72;
+    }
+    .orb { opacity: calc(var(--a) * .8); }
 }
