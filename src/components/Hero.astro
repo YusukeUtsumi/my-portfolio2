@@ -1,35 +1,56 @@
 ---
-import "../styles/hero.css"; 
+import "../styles/hero.css";
 ---
 <section id="hero" class="hero" aria-labelledby="hero-title">
-    <div class="hero-wrap" data-orbs-desktop="48" data-orbs-mobile="0">
-        <!-- 左右イメージ（そのまま） -->
+    <div class="hero-wrap" data-orbs-desktop="16" data-orbs-mobile="4">
+        <!-- 左：実写（装飾扱いなら alt=""） -->
         <div class="hero-left">
-            <img src="/images/hero_risa.webp" alt="Risa" class="hero-img" />
+            <picture class="hero-media">
+                <source srcset="/images/hero_risa.webp 1200w, /images/hero_risa.webp 1200w" type="image/avif" />
+                <img
+                    src="/images/hero_risa.webp"
+                    alt=""
+                    width="1200"
+                    height="1600"
+                    decoding="async"
+                    loading="eager"
+                    fetchpriority="high"
+                    sizes="(max-width: 960px) 100vw, 50vw"
+                />
+            </picture>
         </div>
+
+        <!-- 右：ファンタジー -->
         <div class="hero-right">
-            <img src="/images/hero_lilia.webp" alt="Lilia" class="hero-img" />
+            <picture class="hero-media">
+                <source srcset="/images/hero_lilia.webp 1200w, /images/hero_lilia.webp 1200w" type="image/avif" />
+                <img
+                    src="/images/hero_lilia.webp"
+                    alt=""
+                    width="1200"
+                    height="1600"
+                    decoding="async"
+                    loading="eager"
+                    sizes="(max-width: 960px) 100vw, 50vw"
+                />
+            </picture>
         </div>
 
-        <!-- 柔らかい光の玉（軽量） -->
+        <!-- オーブ -->
         <div class="orbs" aria-hidden="true">
-            <!-- 位置は --x/--y%、サイズは --sz、明るさ/色味は --h(--色相), --a(透明) -->
-            <span class="orb" style="--x:18; --y:28; --sz:180px; --h:28;  --a:.89; --d1:13s; --d2:20s; --k:1;"></span>
-            <span class="orb" style="--x:74; --y:42; --sz:220px; --h:36;  --a:.79; --d1:15s; --d2:23s; --k:-1;"></span>
-            <span class="orb" style="--x:48; --y:68; --sz:120px; --h:12;  --a:.78; --d1:12s; --d2:18s; --k:1;"></span>
-            <span class="orb" style="--x:82; --y:21; --sz:140px; --h:45;  --a:.66; --d1:14s; --d2:21s; --k:-1;"></span>
+            <span class="orb" style="--x:18; --y:28; --sz:180px; --h:28;  --a:.85; --d1:13s; --d2:20s; --k:1;"></span>
+            <span class="orb" style="--x:74; --y:42; --sz:220px; --h:36;  --a:.75; --d1:15s; --d2:23s; --k:-1;"></span>
+            <span class="orb" style="--x:48; --y:68; --sz:140px; --h:12;  --a:.70; --d1:12s; --d2:18s; --k:1;"></span>
             <span class="orb" style="--x:30; --y:78; --sz:200px; --h:20;  --a:.54; --d1:18s; --d2:26s; --k:1;"></span>
-            <span class="orb" style="--x:66; --y:70; --sz:160px; --h:255; --a:.76; --d1:11s; --d2:16s; --k:-1;"></span>
-            <span class="orb" style="--x:42; --y:14; --sz:130px; --h:292; --a:.64; --d1:16s; --d2:24s; --k:1;"></span>
-            <span class="orb" style="--x:52; --y:52; --sz:300px; --h:20;   --a:.40; --d1:22s; --d2:30s; --k:-1;"></span>
         </div>
 
-        <!-- 見出し -->
+        <!-- 中央テキスト -->
         <div class="hero-content">
             <h1 id="hero-title" class="hero-title">
-                <span>AIはカーネーションの<br />夢を見るか？</span><br />
-                <small>Do AI dream of Carnations?</small>
+                <span>AIはカーネーションの<br/>夢を見るか？</span><br/>
+                <p class="hero-sub">Do AIs Dream of Carnations?</p>
             </h1>
+            <!--<p class="hero-sub">Do AIs Dream of Carnations?</p>-->
         </div>
     </div>
 
