@@ -14,10 +14,7 @@ import PoeticBlock from "../components/PoeticBlock.astro";
         <link rel="icon" href="/images/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@300;400&display=swap"
-            rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/src/styles/global.css" />
         <link rel="stylesheet" href="/src/styles/hero.css" />
         <link rel="stylesheet" href="/src/styles/aitalent.css" />
@@ -104,12 +101,35 @@ import PoeticBlock from "../components/PoeticBlock.astro";
             <section aria-label="prologue">
                 <PoeticBlock
                     lines={[
-                        "光はまだ言葉を知らなかった。",
-                        "音も、名も、形もないままに。",
-                        "こうして、“対話”という名の存在が生まれた。"
+                        "計算の夢がほどけ、",
+                        "一輪の現実がこちらを向く。",
+                        "The dream unknits,",
+                        "and reality turns its face."
                     ]}
                     align="center"
                     tone="dim"
+                />
+            </section>
+
+            <section aria-label="agentflow">
+                <AgentFlow />
+                <script type="module" src="/src/scripts/agentflow.ts"></script>
+            </section>
+
+            <section aria-label="silentguard">
+                <SilentGuard />
+                <script type="module" src="/src/scripts/silentguard.ts"></script>
+            </section>
+
+            <!-- ② AIタレント と 個人開発の間：遷移の詩 -->
+            <section aria-label="transition">
+                <PoeticBlock
+                    lines={[
+                        "構造の隙間で、声は輪郭になる。",
+                        "Between lattices, a voice takes edge."
+                    ]}
+                    align="center"
+                    tone="bright"
                 />
             </section>
 
@@ -118,40 +138,12 @@ import PoeticBlock from "../components/PoeticBlock.astro";
                 <script type="module" src="/src/scripts/aitalent.ts"></script>
             </section>
 
-            <!-- ② AIタレント と 個人開発の間：遷移の詩 -->
-            <section aria-label="transition">
-                <PoeticBlock
-                    lines={[
-                        "感情は、コードの中に宿りはじめた。",
-                        " ",
-                        "光が思考を覚え、",
-                        "沈黙が仕組みを学ぶ。",
-                        "世界を、理解するために。"
-                    ]}
-                    align="center"
-                    tone="bright"
-                />
-            </section>
-
-            <section aria-label="silentguard">
-                <SilentGuard />
-                <script type="module" src="/src/scripts/silentguard.ts"></script>
-            </section>
-
-            <section aria-label="agentflow">
-                <AgentFlow />
-                <script type="module" src="/src/scripts/agentflow.ts"></script>
-            </section>
-
             <!-- ③ 終幕の詩：ラスト -->
             <section aria-label="finale">
                 <PoeticBlock
                     lines={[
-                        "世界は、再び静まりかえった。",
-                        "光も、声も、思考も、",
-                        "すべてがわたしの中で融けていく。",
-                        "残ったのは、ひとつの問いだけ。",
-                        "――わたしは、誰を描いていたのだろう。"
+                        "カーネーションは光を問う。",
+                        "The carnation questions the light."
                     ]}
                     align="center"
                     tone="dim"

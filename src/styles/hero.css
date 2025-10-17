@@ -69,7 +69,7 @@
     --liftY: -14vh;
 }
 
-@media (min-width: 1600px) { :root { --liftY: -17vh; } }
+@media (min-width: 1600px) { :root { --liftY: -18vh; } }
 @media (max-width: 1280px) { :root { --liftY: -8vh; } }
 @media (max-width: 1024px) and (min-width: 768px) { :root { --liftY: -7vh; } }
 @media (max-width: 768px) { :root { --liftY: -6vh; } }
@@ -85,7 +85,7 @@
     z-index: 5;
     pointer-events: none;
     row-gap: clamp(6px, 1.2vw, 12px); /* 日英の距離 */
-    color: #fff;
+    color: #f5ecf5ff;
     font-family: "Inter", "Noto Serif JP", sans-serif;
     padding-inline: clamp(16px, 3vw, 40px);
 }
@@ -131,45 +131,45 @@
 
 /* 日本語タイトル */
 .hero-title {
-    font-size: clamp(36px, 5.6vw, 84px);
-    font-weight: 700;
+    font-family: "Noto Serif JP", "Yu Mincho", serif;
+    font-size: clamp(30px, 5.6vw, 84px);
+    font-weight: 300;
     letter-spacing: -0.02em;
     line-height: 1.5;
-    text-shadow: 0 2px 6px rgba(0,0,0,.55);
-    animation: fade-up 1.6s ease-out both;
+    text-shadow: 
+        0 0 18px rgba(86, 47, 159, 0.79),
+        0 0 18px rgba(147, 115, 41, 0.71);
+    animation: fade-up 1.8s ease-out both;
     animation-delay: 0.3s;
 }
 
-.hero-title span {
-    font-family: "Zen Old Mincho", "Noto Serif JP", serif;
-    font-weight: 300;
-    letter-spacing: .04em;
-    font-size: 0.8em; /* 日本語だけ少し大きく */
-    line-height: 1.1;
-    text-shadow:
-        0 0 10px rgba(200, 170, 255, 0.79),
-        0 0 18px rgba(255, 220, 140, 0.71);
+@media (min-width: 1600px) {
+    .hero-title .jp { margin-bottom: 1.8vw; } /* 大画面では広く */
+}
+@media (max-width: 768px) {
+    .hero-title .jp { margin-bottom: 0.8vw; } /* スマホでは詰める */
 }
 
 /* hero-sub を少し上げる（相対位置で自然に） */
 .hero-sub {
+    display: block;
     font-family: "Times New Roman", Times, serif;
     font-size: clamp(20px, 3vw, 34px);
     font-weight: 400;
     letter-spacing: .045em;
     opacity: .95;
     line-height: 1.3;
-    text-shadow: 0 1px 4px rgba(200, 170, 255, 0.79);
-    animation: fade-up-soft 1.6s ease-out both;
+    text-shadow: 0 1px 4px rgba(86, 47, 159, 0.79);
+    animation: fade-up-soft 2.2s ease-out both;
     animation-delay: 0.7s;
     position: relative;
-    top: 0.6em; /* ← ここがキモ。英語コピーだけを上方向に寄せる */
+    top: 0.8em; /* ← ここがキモ。英語コピーだけを上方向に寄せる */
 }
 
 /* スマホでは詰まりすぎ防止で弱める */
 @media (max-width: 768px) {
     .hero-sub {
-        top: -0.4em;
+        top: 0.8em;
     }
 }
 
