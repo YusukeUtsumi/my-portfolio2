@@ -64,3 +64,50 @@ AI TALENT — Risa & Lilia
     transform: translateY(-3px);
     filter: brightness(1.08);
 }
+
+/* ===========================
+    AI TALENT — mobile layout
+   =========================== */
+@media (max-width: 768px) {
+    .ai-grid {
+        display: grid;
+        grid-template-columns: 1fr;              /* 1カラム化 */
+        gap: clamp(14px, 3.5vw, 20px);           /* 余白は控えめに */
+        align-items: start;
+    }
+
+    /* 並び順：上にRisa、下にLilia（必要なら入れ替えてOK） */
+    .ai-grid .risa   { order: 1; }
+    .ai-grid .lilia  { order: 2; }
+
+    /* 画像の見栄えをモバイル寄せ（縦で大きく） */
+    .risa img,
+    .lilia-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 14px;
+        object-fit: cover;
+        /* 端末ごとに統一感を出すならアスペクト比を指定（任意） */
+        /* aspect-ratio: 4 / 5; */
+        /* モバイルでは影を少し控えめにすると締まる */
+        box-shadow:
+            0 18px 48px rgba(0,0,0,0.45),
+            0 0 48px rgba(0,0,0,0.12);
+    }
+
+    /* タイトルと説明の余白・サイズ感を微調整 */
+    .ai-title {
+        font-size: clamp(24px, 6.2vw, 32px);
+        line-height: 1.18;
+        text-shadow:
+            0 0 8px rgba(255,255,255,0.10),
+            0 0 18px rgba(255,255,255,0.12);
+    }
+
+    .ai-sub {
+        margin-top: 0.5rem;
+        font-size: clamp(0.9rem, 1.6vw, 1rem);
+        opacity: 0.9;
+    }
+}

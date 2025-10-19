@@ -17,6 +17,7 @@ import PoeticBlock from "../components/PoeticBlock.astro";
         <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/src/styles/global.css" />
         <link rel="stylesheet" href="/src/styles/hero.css" />
+        <link rel="stylesheet" href="/src/styles/poetic.css" />
         <link rel="stylesheet" href="/src/styles/aitalent.css" />
         <link rel="stylesheet" href="/src/styles/silentguard.css" />
         <link rel="stylesheet" href="/src/styles/agentflow.css" />
@@ -25,7 +26,7 @@ import PoeticBlock from "../components/PoeticBlock.astro";
         <style is:global>
             :root {
                 /* 全ページの暗部トーンを統一 */
-                --bg-base: #0e0e12;
+                --bg-base: #0f0f10;
                 --bg-ink: rgba(0, 0, 0, 0.65);
                 --noise-opacity: 0.06; /* 0.04–0.08 推奨 */
             }
@@ -125,8 +126,8 @@ import PoeticBlock from "../components/PoeticBlock.astro";
             <section aria-label="transition">
                 <PoeticBlock
                     lines={[
-                        "構造の隙間で、声は輪郭になる。",
-                        "Between lattices, a voice takes edge."
+                        "二つの極が、境界の声を生む。",
+                        "Two poles give birth to a voice at the boundary."
                     ]}
                     align="center"
                     tone="bright"

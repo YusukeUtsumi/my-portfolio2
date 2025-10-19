@@ -54,3 +54,5 @@ img, picture {
     transition: opacity .3s ease;
 }
 .site-logo:hover { opacity: 1; }
+
+.page section::after { display: none !important; }
