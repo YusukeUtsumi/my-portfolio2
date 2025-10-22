@@ -4,6 +4,7 @@ import AiTalent from "../components/AiTalent.astro";
 import SilentGuard from "../components/SilentGuard.astro";
 import AgentFlow from "../components/AgentFlow.astro";
 import PoeticBlock from "../components/PoeticBlock.astro";
+import RisaGPTs from "@/components/RisaGPTs.astro";
 ---
 
 <html lang="ja">
@@ -21,6 +22,7 @@ import PoeticBlock from "../components/PoeticBlock.astro";
         <link rel="stylesheet" href="/src/styles/aitalent.css" />
         <link rel="stylesheet" href="/src/styles/silentguard.css" />
         <link rel="stylesheet" href="/src/styles/agentflow.css" />
+        <link rel="stylesheet" href="/src/styles/risagpts.css"/>
 
         <!-- ページ共通 背景／ノイズを index 側で一元管理 -->
         <style is:global>
@@ -117,9 +119,9 @@ import PoeticBlock from "../components/PoeticBlock.astro";
                 <script type="module" src="/src/scripts/agentflow.ts"></script>
             </section>
 
-            <section aria-label="silentguard">
-                <SilentGuard />
-                <script type="module" src="/src/scripts/silentguard.ts"></script>
+            <section aria-label="risagpts">
+                <RisaGPTs />
+                <script type="module" src="/src/scripts/risagpts.ts"></script>
             </section>
 
             <!-- ② AIタレント と 個人開発の間：遷移の詩 -->

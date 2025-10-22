@@ -1,5 +1,5 @@
 /* =========================
-   AgentFlow Section
+    AgentFlow Section
    ========================= */
 .af-section {
     position: relative;
@@ -72,9 +72,27 @@
     font-weight: 600;
 }
 
+.af-head .en {
+    display: block;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.88em;
+    letter-spacing: 0.02em;
+    margin-top: 0.25em;
+    line-height: 1.55;
+}
+.af-head .bullets .en {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.84em;
+}
+
 /* ====== ビジュアル（SilentGuard と揃える） ====== */
 .visual-wrap {
     position: relative;
+}
+
+@media (min-width: 960px) {
+    .af-section .visual-wrap { justify-self: start; }  /* 左配置の対称性を保証 */
+    .af-frame { width: min(640px, 46vw); }             /* ← 安定する“定規” */
 }
 
 .af-glow {
@@ -100,6 +118,11 @@
     display: grid;
     place-items: center;
     animation: af-fade 900ms ease both;
+}
+
+@media (min-width: 960px) {
+    .af-section .visual-wrap { justify-self: start; }  /* 左配置の対称性を保証 */
+    .af-frame { width: min(640px, 46vw); }             /* ← 安定する“定規” */
 }
 
 /* SVG 表示（SilentGuard と同じスケール） */

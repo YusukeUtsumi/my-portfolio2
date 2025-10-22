@@ -1,0 +1,119 @@
+/* =========================
+    RisaGPTs Section
+   ========================= */
+.rg-section {
+    position: relative;
+    padding: 8rem 0 6rem;
+    background: #0f0f10;
+    color: #fff;
+}
+
+/* レイアウト（AgentFlowの左右反転） */
+.rg-container {
+    width: min(1200px, 92vw);
+    margin: 0 auto;
+    display: grid;
+    gap: 3rem;
+}
+
+@media (min-width: 960px) {
+    .rg-container {
+        grid-template-columns: 1fr 1.1fr; /* 左:テキスト / 右:SVG */
+        align-items: start;
+    }
+    .rg-head { order: 1; }
+    .visual-wrap { order: 2; justify-self: end; }
+}
+
+@media (max-width: 959px) {
+    .visual-wrap { order: 1; }
+    .rg-head     { order: 2; }
+}
+
+/* タイポグラフィ（AgentFlowと同一） */
+.rg-head { max-width: 720px; }
+.rg-head .eyebrow {
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9aa0a6;
+    font-size: 0.8rem;
+}
+.rg-head .title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    color: #fff;
+    margin: 0.4rem 0 1rem;
+    text-shadow: 0 0 12px rgba(180, 200, 255, 0.18);
+}
+.rg-head .lede {
+    color: #bdbdbd;
+    font-size: 1.05rem;
+}
+.rg-head .lede span { color: #fff; }
+.rg-head .bullets {
+    margin: 1.2rem 0 1.6rem;
+    color: #bdbdbd;
+    display: grid;
+    gap: 0.4rem;
+}
+.rg-head .cta-row {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+.rg-head .cta {
+    display: inline-block;
+    padding: 0.7rem 1rem;
+    background: #fff;
+    color: #232323ff;
+    border-radius: 0.75rem;
+    font-weight: 600;
+}
+.rg-head .en {
+    display: block;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.88em;
+    letter-spacing: 0.02em;
+    margin-top: 0.25em;
+    line-height: 1.55;
+}
+.rg-head .bullets .en {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.84em;
+}
+
+/* ====== ビジュアル（AgentFlowと完全一致） ====== */
+.visual-wrap { position: relative; }
+
+.rg-frame {
+    margin: 0;
+    aspect-ratio: 16 / 14;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    background-color: #0f0f10;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        inset 0 1px rgba(255, 255, 255, 0.05);
+    display: grid;
+    place-items: center;
+    animation: rg-fade 900ms ease both;
+}
+
+.rg-svg {
+    width: 78%;
+    height: auto;
+    display: block;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
+}
+
+/* Motion */
+@keyframes rg-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rg-frame { animation: none !important; }
+}

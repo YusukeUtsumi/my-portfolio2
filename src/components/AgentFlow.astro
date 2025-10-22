@@ -2,9 +2,12 @@
 import "../styles/agentflow.css";
 
 const bullets = [
-    "YAML一枚でワークフロー/エージェントを定義",
-    "LLM・RPA・外部APIをシームレス連携",
-    "明示的なツール呼び出しと制約管理",
+    "YAML一枚でワークフローを定義",
+    "スクリプト・LLMを順次/並列化でシームレス連携"
+];
+const bulletsEn = [
+    "Define workflows in a single YAML file",
+    "Seamlessly orchestrate scripts and LLMs in sequential or parallel execution"
 ];
 ---
 <section id="agentflow" class="af-section">
@@ -26,13 +29,24 @@ const bullets = [
         <!-- 右：テキスト（PC）／下：テキスト（SP） -->
         <header class="af-head">
             <p class="eyebrow">Automation Framework</p>
-            <h2 class="title">AgentFlow</h2>
+            <h2 class="title">
+                AgentFlow v0.3
+            </h2>
             <p class="lede">
-                フロー定義はYAMLに集約。<br />
-                LLM・スクリプト・APIを<span>“働かせる”</span>ための軽量基盤。
+                「喋らせるな、働かせろ。」<br />
+                LLM・スクリプトを<span>“働かせる”</span>ための軽量基盤。<br /><br />
+                <span class="en">
+                    “Don’t make them talk — make them work.”<br />
+                    A lightweight Python framework to make LLMs and scripts actually <em>work</em>.
+                </span>
             </p>
             <ul class="bullets">
-                {bullets.map((b) => <li>{b}</li>)}
+                {bullets.map((b, i) => (
+                    <li>
+                        {b}<br />
+                        <span class="en">{bulletsEn[i]}</span>
+                    </li>
+                ))}
             </ul>
             <div class="cta-row">
                 <a
@@ -41,7 +55,7 @@ const bullets = [
                     rel="noreferrer"
                     class="cta"
                 >
-                    GitHubを見る
+                    View on GitHub
                 </a>
             </div>
         </header>
