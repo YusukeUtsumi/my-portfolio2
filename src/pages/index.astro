@@ -5,6 +5,7 @@ import SilentGuard from "../components/SilentGuard.astro";
 import AgentFlow from "../components/AgentFlow.astro";
 import PoeticBlock from "../components/PoeticBlock.astro";
 import RisaGPTs from "@/components/RisaGPTs.astro";
+import Aboutme from "@/components/Aboutme.astro";
 ---
 
 <html lang="ja">
@@ -23,6 +24,7 @@ import RisaGPTs from "@/components/RisaGPTs.astro";
         <link rel="stylesheet" href="/src/styles/silentguard.css" />
         <link rel="stylesheet" href="/src/styles/agentflow.css" />
         <link rel="stylesheet" href="/src/styles/risagpts.css"/>
+        <link rel="stylesheet" href="/src/styles/aboutme.css"/>
 
         <!-- ページ共通 背景／ノイズを index 側で一元管理 -->
         <style is:global>
@@ -151,8 +153,21 @@ import RisaGPTs from "@/components/RisaGPTs.astro";
                     align="center"
                     tone="dim"
                 />
-                <!-- ここに“connect”などの出口UIが続く想定 -->
             </section>
+
+            <!-- ④ 終幕の詩：問い -->
+            <section aria-label="end">
+                <PoeticBlock
+                    lines={[
+                        "北を目指すか、それとも南か？",
+                        "Do you seek the North, or drift toward the South?"
+                    ]}
+                    align="center"
+                    tone="dim"
+                />
+            </section>
+
+            <Aboutme />
 
             <!-- Poetic のフェードイン -->
             <script type="module" src="/src/scripts/poetic.ts"></script>

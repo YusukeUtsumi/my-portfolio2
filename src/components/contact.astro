@@ -1,0 +1,47 @@
+---
+const TALLY_URL = "https://tally.so/r/mRXxjj";
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Contact | MeltLight</title>
+
+        <!-- 自動リダイレクト -->
+        <meta http-equiv="refresh" content={`0; url=${TALLY_URL}`} />
+
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                background: #0f0f10;
+                color: #e6e6e6;
+                font-family: "Times New Roman", Times, serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                text-align: center;
+            }
+            p {
+                font-size: 1rem;
+                letter-spacing: 0.03em;
+                margin: 0.4rem 0;
+            }
+            a {
+                color: rgba(180, 200, 255, 0.9);
+                text-decoration: underline;
+                transition: color 0.3s ease;
+            }
+            a:hover {
+                color: #fff;
+            }
+        </style>
+    </head>
+
+    <body>
+        <p>Redirecting to the contact form…</p>
+        <p><a href={TALLY_URL} target="_blank" rel="noopener">Open manually</a></p>
+    </body>
+</html>

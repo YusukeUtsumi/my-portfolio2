@@ -96,6 +96,13 @@ section[aria-label="finale"] .po-line {
     --po-color-tail: rgba(145,162,238,0.32);
 }
 
+/* ④ 問い：無情な光（白方向） */
+section[aria-label="end"] .po-line {
+    --po-color-mid:  rgba(241, 241, 241, 0.64);
+    --po-color-far:  rgba(186, 186, 187, 0.5);
+    --po-color-tail: rgba(132,148,235,0.34);
+}
+
 /* 英文：影を少し控えめに */
 .po-line:lang(en) {
     text-shadow:

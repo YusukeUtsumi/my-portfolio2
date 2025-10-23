@@ -1,0 +1,188 @@
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #0f0f10;
+    color: #e6e6e6;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif; /* 英語のみ */
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    overflow: hidden;
+
+    /* 詩より少しゆっくり＋軽量ブラーの“ふわっ” */
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    will-change: transform, opacity, filter;
+    animation:
+        aboutEnter 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+        aboutSoften 680ms ease-out forwards; /* 短時間だけブラー */
+}
+
+.about-title {
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(230, 230, 230, 0.78);
+    margin-bottom: 1.2rem;
+}
+
+/* 一瞬だけ背景グローを“ふわっ” */
+.about-section::after {
+    content: "";
+    position: absolute;
+    inset: -10% -10%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(32% 22% at 50% 54%, rgba(200, 210, 255, 0.10), transparent 60%),
+        radial-gradient(60% 35% at 50% 70%, rgba(120, 140, 255, 0.06), transparent 70%);
+    opacity: 0;
+    transform: scale(1.04);
+    will-change: opacity, transform;
+    animation: bloomOnce 720ms ease-out 60ms forwards;
+}
+
+.about-content {
+    position: relative;
+    z-index: 1;
+}
+
+.about-name {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin: 0.5rem 0;
+    letter-spacing: 0.06em;
+    text-shadow:
+        0 0 14px rgba(255, 255, 255, 0.10),
+        0 0 28px rgba(160, 180, 240, 0.10);
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+.about-role {
+    font-size: 1.1rem;
+    color: rgba(200, 200, 200, 0.78);
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+/* ===== Intro line under the role ===== */
+.about-intro {
+    font-size: 1rem;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    color: rgba(230, 230, 230, 0.88);
+    max-width: 720px;
+    margin: 0.5rem auto 2.0rem;
+    padding: 0 1rem;
+    text-align: center;
+
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    will-change: transform, opacity;
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards;
+}
+
+.about-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+}
+
+.about-links img {
+    width: 28px;
+    height: 28px;
+    opacity: 0.8;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.about-links img:hover {
+    opacity: 1;
+    transform: translate3d(0, -1px, 0) scale(1.06);
+}
+
+/* connect ボタン */
+.about-contact {
+    margin-top: 1.8rem;
+    text-align: center;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+}
+
+.connect-btn {
+    display: inline-block;
+    padding: 0.6rem 1.8rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.9);
+    border: 1px solid rgba(240, 240, 240, 0.25);
+    border-radius: 2rem;
+    background: transparent;
+    text-decoration: none;
+    transition:
+        color 0.35s ease,
+        border-color 0.35s ease,
+        background-color 0.35s ease,
+        transform 0.35s ease;
+}
+.connect-btn:hover {
+    color: #fff;
+    border-color: rgba(210, 180, 255, 0.6);
+    background-color: rgba(145, 162, 238, 0.08);
+    transform: translateY(-2px);
+}
+
+/* ===== Animations ===== */
+@keyframes aboutEnter {
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes aboutSoften {
+    0% { filter: blur(6px); }
+    60% { filter: blur(3px); }
+    100% { filter: blur(0px); }
+}
+@keyframes bloomOnce {
+    0% { opacity: 0; transform: scale(1.02); }
+    35% { opacity: 0.28; transform: scale(1.00); }
+    100% { opacity: 0; transform: scale(1.00); }
+}
+@keyframes itemUp {
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* 小さめ画面の微調整 */
+@media (max-width: 768px) {
+    .about-intro {
+        font-size: 0.95rem;
+        line-height: 1.85;
+        max-width: 92vw;
+        margin-bottom: 1.8rem;
+    }
+}
+
+/* モーション軽減対応 */
+@media (prefers-reduced-motion: reduce) {
+    .about-section,
+    .about-name,
+    .about-role,
+    .about-intro,
+    .about-links,
+    .about-contact,
+    .about-section::after {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+    }
+}
