@@ -1,5 +1,9 @@
 ---
 import "../styles/aboutme.css";
+
+/* SVGはアセットimport（URL文字列）にして本番でも安全に解決 */
+import xIconUrl from "../assets/x.svg?url";
+import linkedinIconUrl from "../assets/linkedin.svg?url";
 ---
 
 <section id="about" class="about-section" aria-labelledby="about-title">
@@ -8,26 +12,39 @@ import "../styles/aboutme.css";
         <p class="about-name">Yusuke Utsumi</p>
         <p class="about-role">AI Concept Artist / Conceptual Engineer</p>
         <p class="about-intro">
-            Exploring the boundary where art and system intertwine —<br/>  
+            Exploring the boundary where art and system intertwine —<br/>
             designing emotions, logic, and light for the age of AI.
         </p>
-        <div class="about-links">
-            <a href="https://x.com/yourhandle" target="_blank" rel="noopener" aria-label="X">
-                <img src="/icons/x.svg" alt="X" />
+
+        <div class="about-links" role="list">
+            <a
+                href="https://x.com/yourhandle"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open X profile (new tab)"
+                role="listitem"
+            >
+                <img src={xIconUrl} alt="X" width="28" height="28" />
             </a>
-            <a href="https://linkedin.com/in/yourhandle" target="_blank" rel="noopener" aria-label="LinkedIn">
-                <img src="/icons/linkedin.svg" alt="LinkedIn" />
+            <a
+                href="https://linkedin.com/in/yourhandle"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open LinkedIn profile (new tab)"
+                role="listitem"
+            >
+                <img src={linkedinIconUrl} alt="LinkedIn" width="28" height="28" />
             </a>
         </div>
+
         <div class="about-contact">
             <a
                 href="https://tally.so/r/mRXxjj"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 class="connect-btn"
                 aria-label="Open contact form on Tally (new tab)"
             >connect</a>
         </div>
     </div>
-    
 </section>

@@ -1,15 +1,15 @@
 ---
-/** Props 型を定義 */
+/** Props 型 */
 type Align = 'center' | 'left';
 type Tone  = 'dim' | 'bright';
 interface Props {
     lines: string[];
     align?: Align;
     tone?: Tone;
-    glow?: string;
+    glow?: string; // CSS var に渡す発光強度（例: "0.6"})
 }
 
-/** Astro.props に型を付与（デフォルト値もここで） */
+/** デフォルト値つきで受け取り */
 const {
     lines = [],
     align = 'center',
@@ -19,6 +19,7 @@ const {
 
 import "../styles/poetic.css";
 ---
+
 <section
     class={`poetic ${align === 'left' ? 'po-left' : 'po-center'} ${tone === 'bright' ? 'po-bright' : 'po-dim'}`}
     data-poetic

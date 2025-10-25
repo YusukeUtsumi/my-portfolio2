@@ -1,34 +1,40 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+/* src/scripts/poetic.ts */
 
-gsap.registerPlugin(ScrollTrigger);
-export {};
+const ready = (cb: () => void) => {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        cb();
+    } else {
+        document.addEventListener("DOMContentLoaded", cb, { once: true });
+    }
+};
 
-const blocks = document.querySelectorAll<HTMLElement>('[data-poetic]');
-blocks.forEach((block) => {
-    const lines = block.querySelectorAll<HTMLElement>('.po-line');
-    const glow = block.querySelector<HTMLElement>('.po-glow');
-    if (!lines.length) return;
+ready(() => {
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const blocks: HTMLElement[] = Array.from(document.querySelectorAll<HTMLElement>(".poetic"));
 
-    ScrollTrigger.create({
-        trigger: block,
-        start: "top 78%",
-        once: true,
-        onEnter: () => {
-            const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-            // 1) グローをうっすら点灯
-            if (glow) {
-                tl.to(glow, { opacity: 0.45, duration: 0.8 }, 0)
-                    // 維持しつつ少し落とす（呼吸感）
-                    .to(glow, { opacity: 0.28, duration: 1.2, ease: "sine.inOut" }, 0.8);
+    if (blocks.length === 0) return;
+
+    // JSが有効なときだけ演出を有効化
+    blocks.forEach((b) => b.classList.add("reveal"));
+
+    if (prefersReduced) {
+        // 動きを抑える環境 → 即時表示
+        blocks.forEach((b) => b.classList.add("is-in"));
+        return;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+            if (e.isIntersecting) {
+                (e.target as HTMLElement).classList.add("is-in");
+                io.unobserve(e.target);
             }
-            // 2) 行ごとに下→上フェード
-            tl.to(lines, {
-                opacity: 1,
-                y: 0,
-                duration: 0.7,
-                stagger: 0.08
-            }, 0.05);
         }
+    }, {
+        root: null,
+        rootMargin: "0px 0px -20% 0px",
+        threshold: 0.2
     });
+
+    blocks.forEach((b) => io.observe(b));
 });

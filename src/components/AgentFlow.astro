@@ -1,6 +1,9 @@
 ---
 import "../styles/agentflow.css";
 
+/* SVGはアセットimport（URL文字列）で安全に解決 */
+import agentFlowSvgUrl from "../assets/AgentFlow.svg?url";
+
 const bullets = [
     "YAML一枚でワークフローを定義",
     "スクリプト・LLMを順次/並列化でシームレス連携"
@@ -10,6 +13,7 @@ const bulletsEn = [
     "Seamlessly orchestrate scripts and LLMs in sequential or parallel execution"
 ];
 ---
+
 <section id="agentflow" class="af-section">
     <div class="af-container">
         <!-- 左：SVG（PC）／上：SVG（SP） -->
@@ -17,7 +21,7 @@ const bulletsEn = [
             <div class="af-glow" aria-hidden="true"></div>
             <figure class="af-frame" aria-label="AgentFlow emblem">
                 <img
-                    src="/images/AgentFlow.svg"
+                    src={agentFlowSvgUrl}
                     alt="AgentFlow Orchestration"
                     class="af-svg"
                     loading="lazy"
@@ -29,9 +33,7 @@ const bulletsEn = [
         <!-- 右：テキスト（PC）／下：テキスト（SP） -->
         <header class="af-head">
             <p class="eyebrow">Automation Framework</p>
-            <h2 class="title">
-                AgentFlow v0.3
-            </h2>
+            <h2 class="title">AgentFlow v0.3</h2>
             <p class="lede">
                 「喋らせるな、働かせろ。」<br />
                 LLM・スクリプトを<span>“働かせる”</span>ための軽量基盤。<br /><br />

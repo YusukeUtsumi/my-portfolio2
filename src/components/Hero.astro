@@ -1,17 +1,23 @@
 ---
 import "../styles/hero.css";
+import heroRisa from "@/assets/hero_risa.webp";
+import heroLilia from "@/assets/hero_lilia.webp";
 ---
+
 <section id="hero" class="hero" aria-labelledby="hero-title">
     <div class="hero-wrap" data-orbs-desktop="16" data-orbs-mobile="4">
         <!-- 左：実写（装飾扱いなら alt=""） -->
         <div class="hero-left">
             <picture class="hero-media">
-                <source srcset="/images/hero_risa.webp 1200w, /images/hero_risa.webp 1200w" type="image/avif" />
+                <source
+                    srcset={`${heroRisa.src} 1200w`}
+                    type="image/webp"
+                />
                 <img
-                    src="/images/hero_risa.webp"
+                    src={heroRisa.src}
                     alt=""
-                    width="1200"
-                    height="1600"
+                    width={heroRisa.width ?? 1200}
+                    height={heroRisa.height ?? 1600}
                     decoding="async"
                     loading="eager"
                     fetchpriority="high"
@@ -23,12 +29,15 @@ import "../styles/hero.css";
         <!-- 右：ファンタジー -->
         <div class="hero-right">
             <picture class="hero-media">
-                <source srcset="/images/hero_lilia.webp 1200w, /images/hero_lilia.webp 1200w" type="image/avif" />
+                <source
+                    srcset={`${heroLilia.src} 1200w`}
+                    type="image/webp"
+                />
                 <img
-                    src="/images/hero_lilia.webp"
+                    src={heroLilia.src}
                     alt=""
-                    width="1200"
-                    height="1600"
+                    width={heroLilia.width ?? 1200}
+                    height={heroLilia.height ?? 1600}
                     decoding="async"
                     loading="eager"
                     sizes="(max-width: 960px) 100vw, 50vw"
@@ -50,9 +59,9 @@ import "../styles/hero.css";
                 <span class="hero-title">AIはカーネーションの<br/>夢を見るか？</span>
                 <span class="hero-sub">Do AIs Dream of Carnations?</span>
             </h1>
-            
         </div>
     </div>
 
-    <script type="module" src="/src/scripts/hero.ts"></script>
+    <!-- スクリプト -->
+    <script type="module" src={`${import.meta.env.BASE_URL}src/scripts/hero.ts`}></script>
 </section>

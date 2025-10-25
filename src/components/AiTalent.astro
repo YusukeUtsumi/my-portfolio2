@@ -1,41 +1,70 @@
 ---
 /**
  * AiTalent.astro
- * 非対称レイアウト：
- *  - Risa：1枚を大きく（現実の光）
- *  - Lilia：2枚を小さく（幻想の残響）
+ * - Risa：1枚（大きく）
+ * - Lilia：最大2枚（小さく）
+ *
+ * 画像は string or ImageMetadata の両対応。
+ * string が "/images/..." の場合は import.meta.env.BASE_URL を自動付与。
  */
 
+import "../styles/aitalent.css";
+import type { ImageMetadata } from "astro";
+
+/* デフォルト画像は src/assets から import（本番でも確実に解決） */
+import risaDefault from "../assets/risa_gallery_01.webp";
+import liliaDefaultA from "../assets/lilia_gallery_04.webp";
+
+/* 型定義：両対応（string or ImageMetadata） */
+export type ImgSrc = string | ImageMetadata;
 export interface ImageItem {
-    src: string;
+    src: ImgSrc;
     alt?: string;
     width?: number;
     height?: number;
 }
 
 export interface Props {
-    risa?: ImageItem[];
-    lilia?: ImageItem[];
+    risa?: ImageItem[];    // 先頭のみ使用
+    lilia?: ImageItem[];   // 先頭2枚まで使用
     heading?: string;
     subJa?: string;
     subEn?: string;
 }
 
+/* 文字列srcを安全にURLへ解決（/images/.. → BASE_URL 付与、相対 or http はそのまま） */
+const resolveSrc = (s: ImgSrc): string => {
+    if (typeof s !== "string") return s.src;
+    if (/^https?:\/\//i.test(s)) return s;
+    // 先頭スラは削除し、BASE_URLを付与
+    const path = s.replace(/^\//, "");
+    return `${import.meta.env.BASE_URL}${path}`;
+};
+
+/* width/height をメタから補完 */
+const resolveWH = (item: ImageItem, meta?: ImageMetadata) => {
+    return {
+        width:  item.width  ?? meta?.width  ?? undefined,
+        height: item.height ?? meta?.height ?? undefined,
+    };
+};
+
+/* デフォルト props（すべて assets import で安全） */
 const {
     risa = [
-        { src: "/images/risa_gallery_01.webp", alt: "Risa main", width: 1280, height: 1706 }
+        { src: risaDefault, alt: "Risa main",  width: risaDefault.width,  height: risaDefault.height }
     ],
     lilia = [
-        { src: "/images/lilia_gallery_04.webp", alt: "Lilia 1", width: 1024, height: 1280 }
+        { src: liliaDefaultA, alt: "Lilia 1",  width: liliaDefaultA.width, height: liliaDefaultA.height }
     ],
     heading = "Risa / Lilia",
-    subJa = "AIで描く、新しい広告体験",
-    subEn = "A new kind of advertising, drawn by AI."
-} = Astro.props;
+    subJa   = "AIで描く、新しい広告体験",
+    subEn   = "A new kind of advertising, drawn by AI."
+} = Astro.props as Props;
 
 const risaMain = risa[0];
-const liliaA = lilia[0];
-const liliaB = lilia[1];
+const liliaA   = lilia[0];
+const liliaB   = lilia[1];
 ---
 
 <section id="ai-talent" class="ai-section">
@@ -50,29 +79,29 @@ const liliaB = lilia[1];
 
     <div class="ai-grid">
         <!-- Risa：大きい1枚 -->
-        <figure class="risa">
-            <img
-                src={risaMain.src}
-                alt={risaMain.alt ?? "Risa"}
-                width={risaMain.width ?? 1280}
-                height={risaMain.height ?? 1706}
-                decoding="async"
-                loading="lazy"
-            />
-            <figcaption class="cap">
-                Risa <small>— the ordinary, softly awake</small>
-            </figcaption>
-        </figure>
+        {risaMain && (
+            <figure class="risa">
+                <img
+                    src={resolveSrc(risaMain.src)}
+                    alt={risaMain.alt ?? "Risa"}
+                    {...resolveWH(risaMain, typeof risaMain.src !== "string" ? risaMain.src : undefined)}
+                    decoding="async"
+                    loading="lazy"
+                />
+                <figcaption class="cap">
+                    Risa <small>— the ordinary, softly awake</small>
+                </figcaption>
+            </figure>
+        )}
 
         <!-- Lilia：小さめ2枚 -->
         <div class="lilia">
             {liliaA && (
                 <figure class="lilia-item">
                     <img
-                        src={liliaA.src}
+                        src={resolveSrc(liliaA.src)}
                         alt={liliaA.alt ?? "Lilia 1"}
-                        width={liliaA.width ?? 1024}
-                        height={liliaA.height ?? 1280}
+                        {...resolveWH(liliaA, typeof liliaA.src !== "string" ? liliaA.src : undefined)}
                         decoding="async"
                         loading="lazy"
                     />
@@ -81,10 +110,9 @@ const liliaB = lilia[1];
             {liliaB && (
                 <figure class="lilia-item">
                     <img
-                        src={liliaB.src}
+                        src={resolveSrc(liliaB.src)}
                         alt={liliaB.alt ?? "Lilia 2"}
-                        width={liliaB.width ?? 1024}
-                        height={liliaB.height ?? 1280}
+                        {...resolveWH(liliaB, typeof liliaB.src !== "string" ? liliaB.src : undefined)}
                         decoding="async"
                         loading="lazy"
                     />
