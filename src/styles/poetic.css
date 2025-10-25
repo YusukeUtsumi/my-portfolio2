@@ -21,7 +21,7 @@ Poetic interlude block
     text-align: center;
 }
 
-/* 行テキスト（✅ デフォルトで見える） */
+/* 既定：見える（JS無効でも読める） */
 .po-line {
     font-family: "Zen Old Mincho", "Noto Serif JP", serif;
     font-weight: 300;
@@ -35,17 +35,15 @@ Poetic interlude block
         0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
         0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
         0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
-    opacity: 1;                 /* ← 既定は表示 */
-    transform: none;            /* ← 既定はそのまま */
-    transition: opacity 1.2s ease, transform 1.2s ease;
+    transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
-/* ▼ JSが有効なときだけ演出を適用 */
-.poetic.reveal .po-line {
+/* JS有効時だけ初期は隠す → is-in で表示 */
+.js .poetic:not(.is-in) .po-line {
     opacity: 0;
     transform: translateY(12px);
 }
-.poetic.reveal.is-in .po-line {
+.js .poetic.is-in .po-line {
     opacity: 1;
     transform: none;
 }
@@ -83,5 +81,5 @@ section[aria-label="end"] .po-line {
     --po-color-tail: rgba(229,191,186,0.34);
 }
 
-/* 装飾グローは不要なら非表示のまま */
+/* 装飾グロー（任意） */
 .po-glow { display: none; }

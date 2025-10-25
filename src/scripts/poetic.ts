@@ -1,4 +1,10 @@
 /* src/scripts/poetic.ts */
+const addJSFlagEarly = () => {
+    // JSが有効なときだけ <html class="js"> を付ける
+    document.documentElement.classList.add("js");
+};
+addJSFlagEarly();
+
 const ready = (cb: () => void) => {
     if (document.readyState === "complete" || document.readyState === "interactive") cb();
     else document.addEventListener("DOMContentLoaded", cb, { once: true });
@@ -9,20 +15,14 @@ ready(() => {
     const blocks: HTMLElement[] = Array.from(document.querySelectorAll<HTMLElement>(".poetic"));
     if (blocks.length === 0) return;
 
-    // JS有効サイン：まず .reveal を付けて「一旦隠す」
-    blocks.forEach((b) => b.classList.add("reveal"));
-
     if (prefersReduced) {
-        // 動きOFF環境では即表示して終わり
+        // 動きを抑える環境 → 即表示
         blocks.forEach((b) => b.classList.add("is-in"));
         return;
     }
 
-    // 次フレームで is-in を付けると CSS transition が確実に走る
     const showNextFrame = (el: HTMLElement) => {
-        requestAnimationFrame(() => {
-            el.classList.add("is-in");
-        });
+        requestAnimationFrame(() => el.classList.add("is-in"));
     };
 
     const io = new IntersectionObserver((entries, obs) => {
@@ -34,15 +34,15 @@ ready(() => {
         }
     }, {
         root: null,
-        rootMargin: "0px 0px -20% 0px",
-        threshold: 0.2
+        rootMargin: "0px 0px -5% 0px",
+        threshold: 0.01
     });
 
-    // 初期から画面内にあるブロックは次フレームで表示、それ以外は監視
+    // すでに画面内にある要素は即表示、それ以外は監視
     const vh = window.innerHeight || document.documentElement.clientHeight;
     blocks.forEach((b) => {
         const top = b.getBoundingClientRect().top;
-        if (top < vh * 0.8) showNextFrame(b);
+        if (top < vh * 0.9) showNextFrame(b);
         else io.observe(b);
     });
 });
