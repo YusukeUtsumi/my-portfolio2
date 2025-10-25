@@ -19,6 +19,13 @@ import "../styles/silentguard.css";
 import "../styles/agentflow.css";
 import "../styles/risagpts.css";
 import "../styles/aboutme.css";
+
+/* ✅ scripts をビルド後URLに解決（?url） */
+import heroJs from "../scripts/hero.ts?url";
+import agentflowJs from "../scripts/agentflow.ts?url";
+import risagptsJs from "../scripts/risagpts.ts?url";
+import aitalentJs from "../scripts/aitalent.ts?url";
+import poeticJs from "../scripts/poetic.ts?url";
 ---
 
 <html lang="ja">
@@ -110,7 +117,7 @@ import "../styles/aboutme.css";
         <main class="page">
             <section>
                 <Hero />
-                <script type="module">import "../scripts/hero.ts";</script>
+                <script type="module" src={heroJs}></script>
             </section>
 
             <section aria-label="prologue">
@@ -128,12 +135,12 @@ import "../styles/aboutme.css";
 
             <section aria-label="agentflow">
                 <AgentFlow />
-                <script type="module">import "../scripts/agentflow.ts";</script>
+                <script type="module" src={agentflowJs}></script>
             </section>
 
             <section aria-label="risagpts">
                 <RisaGPTs />
-                <script type="module">import "../scripts/risagpts.ts";</script>
+                <script type="module" src={risagptsJs}></script>
             </section>
 
             <section aria-label="transition">
@@ -149,7 +156,7 @@ import "../styles/aboutme.css";
 
             <section aria-label="ai-talent">
                 <AiTalent />
-                <script type="module">import "../scripts/aitalent.ts";</script>
+                <script type="module" src={aitalentJs}></script>
             </section>
 
             <section aria-label="finale">
@@ -176,8 +183,8 @@ import "../styles/aboutme.css";
 
             <Aboutme />
 
-            <!-- フェードイン演出（poetic.ts） -->
-            <script type="module">import "../scripts/poetic.ts";</script>
+            <!-- フェードイン演出 -->
+            <script type="module" src={poeticJs}></script>
         </main>
     </body>
 </html>
