@@ -19,13 +19,6 @@ import "../styles/silentguard.css";
 import "../styles/agentflow.css";
 import "../styles/risagpts.css";
 import "../styles/aboutme.css";
-
-/* ✅ scripts をビルド後URLに解決（?url） */
-import heroJs from "../scripts/hero.ts?url";
-import agentflowJs from "../scripts/agentflow.ts?url";
-import risagptsJs from "../scripts/risagpts.ts?url";
-import aitalentJs from "../scripts/aitalent.ts?url";
-import poeticJs from "../scripts/poetic.ts?url";
 ---
 
 <html lang="ja">
@@ -34,7 +27,7 @@ import poeticJs from "../scripts/poetic.ts?url";
         <meta name="viewport" content="width=device-width" />
         <title>MeltLight</title>
 
-        <!-- favicon (assets import) -->
+        <!-- favicon（assets importで安全） -->
         <link rel="icon" type="image/svg+xml" href={favicon.src} />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -117,7 +110,10 @@ import poeticJs from "../scripts/poetic.ts?url";
         <main class="page">
             <section>
                 <Hero />
-                <script type="module" src={heroJs}></script>
+                <!-- ✅ .ts を直リンクせず、インラインimportでバンドルさせる -->
+                <script type="module">
+                    import "../scripts/hero.ts";
+                </script>
             </section>
 
             <section aria-label="prologue">
@@ -135,12 +131,16 @@ import poeticJs from "../scripts/poetic.ts?url";
 
             <section aria-label="agentflow">
                 <AgentFlow />
-                <script type="module" src={agentflowJs}></script>
+                <script type="module">
+                    import "../scripts/agentflow.ts";
+                </script>
             </section>
 
             <section aria-label="risagpts">
                 <RisaGPTs />
-                <script type="module" src={risagptsJs}></script>
+                <script type="module">
+                    import "../scripts/risagpts.ts";
+                </script>
             </section>
 
             <section aria-label="transition">
@@ -156,7 +156,9 @@ import poeticJs from "../scripts/poetic.ts?url";
 
             <section aria-label="ai-talent">
                 <AiTalent />
-                <script type="module" src={aitalentJs}></script>
+                <script type="module">
+                    import "../scripts/aitalent.ts";
+                </script>
             </section>
 
             <section aria-label="finale">
@@ -183,8 +185,10 @@ import poeticJs from "../scripts/poetic.ts?url";
 
             <Aboutme />
 
-            <!-- フェードイン演出 -->
-            <script type="module" src={poeticJs}></script>
+            <!-- ✅ フェードイン演出（poetic.ts）も同様にインラインimport -->
+            <script type="module">
+                import "../scripts/poetic.ts";
+            </script>
         </main>
     </body>
 </html>
