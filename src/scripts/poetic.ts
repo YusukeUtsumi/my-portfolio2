@@ -9,25 +9,26 @@ ready(() => {
     const blocks: HTMLElement[] = Array.from(document.querySelectorAll<HTMLElement>(".poetic"));
     if (blocks.length === 0) return;
 
-    // JSが効いている印として .reveal を付与（CSSが演出を有効化）
+    // JS有効サイン：まず .reveal を付けて「一旦隠す」
     blocks.forEach((b) => b.classList.add("reveal"));
 
     if (prefersReduced) {
+        // 動きOFF環境では即表示して終わり
         blocks.forEach((b) => b.classList.add("is-in"));
         return;
     }
 
-    const inViewportNow = (el: HTMLElement) => {
-        const r = el.getBoundingClientRect();
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        // 画面の80%より上に頭が来ていたら「見えている」とみなす
-        return r.top < vh * 0.8;
+    // 次フレームで is-in を付けると CSS transition が確実に走る
+    const showNextFrame = (el: HTMLElement) => {
+        requestAnimationFrame(() => {
+            el.classList.add("is-in");
+        });
     };
 
     const io = new IntersectionObserver((entries, obs) => {
         for (const e of entries) {
             if (e.isIntersecting) {
-                (e.target as HTMLElement).classList.add("is-in");
+                showNextFrame(e.target as HTMLElement);
                 obs.unobserve(e.target);
             }
         }
@@ -37,6 +38,11 @@ ready(() => {
         threshold: 0.2
     });
 
-    // すでに画面内にある要素は即表示、それ以外は監視
-    blocks.forEach((b) => (inViewportNow(b) ? b.classList.add("is-in") : io.observe(b)));
+    // 初期から画面内にあるブロックは次フレームで表示、それ以外は監視
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    blocks.forEach((b) => {
+        const top = b.getBoundingClientRect().top;
+        if (top < vh * 0.8) showNextFrame(b);
+        else io.observe(b);
+    });
 });
