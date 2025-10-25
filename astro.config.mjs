@@ -9,8 +9,8 @@ const site = 'https://YusukeUtsumi.github.io'; // 末尾スラなし
 const base = '/my-portfolio2';                  // リポジトリ名
 
 export default defineConfig({
-  site,                // ドメイン部分のみ
-  base,                // 先頭に / を付けてリポジトリ名
+  site: 'https://YusukeUtsumi.github.io',
+  base: '/my-portfolio2',
   output: 'static',    // デフォルトだが明示
   integrations: [react()],
   vite: {
