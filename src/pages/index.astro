@@ -6,10 +6,11 @@ import PoeticBlock from "../components/PoeticBlock.astro";
 import RisaGPTs from "@/components/RisaGPTs.astro";
 import Aboutme from "@/components/Aboutme.astro";
 
-/* ✅ 背景ノイズ画像をアセットimportで安全に解決 */
+/* assets */
 import bgNoise from "../assets/bg_noise.webp";
 import favicon from "../assets/favicon.svg";
 
+/* global styles */
 import "../styles/global.css";
 import "../styles/hero.css";
 import "../styles/poetic.css";
@@ -26,7 +27,7 @@ import "../styles/aboutme.css";
         <meta name="viewport" content="width=device-width" />
         <title>MeltLight</title>
 
-        <!-- favicon -->
+        <!-- favicon (assets import) -->
         <link rel="icon" type="image/svg+xml" href={favicon.src} />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,6 +36,11 @@ import "../styles/aboutme.css";
             href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap"
             rel="stylesheet"
         />
+
+        <!-- ✅ JS有効時だけ CSS の .js セレクタを有効化（フェードインの初期非表示を可能に） -->
+        <script>
+            document.documentElement.classList.add('js');
+        </script>
 
         <style is:global>
             :root {
@@ -53,7 +59,7 @@ import "../styles/aboutme.css";
                 inset: 0;
                 z-index: -2;
                 pointer-events: none;
-                /* ✅ JS式は使えないため、background-imageはインラインで指定 */
+                /* background-image はインラインで指定（assetsのURLを使用） */
                 background-repeat: repeat;
                 background-position: 50% 50%;
                 background-size: 480px 480px;
@@ -98,7 +104,7 @@ import "../styles/aboutme.css";
     </head>
 
     <body>
-        <!-- ✅ インラインで bgNoise.src を指定 -->
+        <!-- 背景ノイズ（assetsのURLをインラインで適用） -->
         <div
             class="bg-noise"
             style={`background-image:url(${bgNoise.src})`}
@@ -174,7 +180,8 @@ import "../styles/aboutme.css";
             </section>
 
             <Aboutme />
-    
+
+            <!-- フェードイン演出（poetic.ts） -->
             <script type="module">import "../scripts/poetic.ts";</script>
         </main>
     </body>
