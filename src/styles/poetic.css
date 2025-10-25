@@ -38,12 +38,12 @@ Poetic interlude block
     transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
-/* JS有効時だけ初期は隠す → is-in で表示 */
-.js .poetic:not(.is-in) .po-line {
+/* ▼ JSが「poetic.ts を読み込んだ」時だけ発動（初期は隠す→is-inで表示） */
+.poetic-ready .poetic:not(.is-in) .po-line {
     opacity: 0;
     transform: translateY(12px);
 }
-.js .poetic.is-in .po-line {
+.poetic-ready .poetic.is-in .po-line {
     opacity: 1;
     transform: none;
 }

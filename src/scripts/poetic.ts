@@ -1,9 +1,8 @@
 /* src/scripts/poetic.ts */
-const addJSFlagEarly = () => {
-    // JSが有効なときだけ <html class="js"> を付ける
-    document.documentElement.classList.add("js");
-};
-addJSFlagEarly();
+
+// このモジュールが読み込まれた「事実」をCSSに伝えるためのフラグ
+// → 初期非表示は .poetic-ready があるときだけ発動する
+document.documentElement.classList.add("poetic-ready");
 
 const ready = (cb: () => void) => {
     if (document.readyState === "complete" || document.readyState === "interactive") cb();
