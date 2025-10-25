@@ -19,6 +19,13 @@ import "../styles/silentguard.css";
 import "../styles/agentflow.css";
 import "../styles/risagpts.css";
 import "../styles/aboutme.css";
+
+/* ✅ スクリプトは Astro.resolve() で “ビルド後URL” を取得（.ts直読みをやめる） */
+const heroJs      = (Astro as any).resolve("../scripts/hero.ts");
+const agentflowJs = (Astro as any).resolve("../scripts/agentflow.ts");
+const risagptsJs  = (Astro as any).resolve("../scripts/risagpts.ts");
+const aitalentJs  = (Astro as any).resolve("../scripts/aitalent.ts");
+const poeticJs    = (Astro as any).resolve("../scripts/poetic.ts");
 ---
 
 <html lang="ja">
@@ -43,8 +50,7 @@ import "../styles/aboutme.css";
                 --bg-ink: rgba(0, 0, 0, 0.65);
                 --noise-opacity: 0.06;
             }
-            html,
-            body {
+            html, body {
                 height: 100%;
                 background: var(--bg-base);
                 color-scheme: dark;
@@ -78,42 +84,26 @@ import "../styles/aboutme.css";
             .page section::after {
                 content: "";
                 position: absolute;
-                left: 0;
-                right: 0;
-                bottom: -1px;
+                left: 0; right: 0; bottom: -1px;
                 height: clamp(64px, 8vw, 120px);
                 pointer-events: none;
-                background: linear-gradient(
-                    180deg,
-                    transparent 0%,
-                    rgba(14, 14, 18, 0.92) 100%
-                );
+                background: linear-gradient(180deg, transparent 0%, rgba(14,14,18,0.92) 100%);
             }
-            @media (max-width: 768px) {
-                :root { --noise-opacity: 0.05; }
-            }
-            @media (prefers-reduced-motion: reduce) {
-                * { animation: none !important; transition: none !important; }
-            }
+            @media (max-width: 768px) { :root { --noise-opacity: 0.05; } }
+            @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
         </style>
     </head>
 
     <body>
         <!-- 背景ノイズ（assetsのURLをインラインで適用） -->
-        <div
-            class="bg-noise"
-            style={`background-image:url(${bgNoise.src})`}
-        ></div>
-
+        <div class="bg-noise" style={`background-image:url(${bgNoise.src})`}></div>
         <div class="bg-vignette"></div>
 
         <main class="page">
             <section>
                 <Hero />
-                <!-- ✅ .ts を直リンクせず、インラインimportでバンドルさせる -->
-                <script type="module">
-                    import "../scripts/hero.ts";
-                </script>
+                <!-- ✅ .ts を直参照せず、ビルド後URLを src に指定 -->
+                <script type="module" src={heroJs}></script>
             </section>
 
             <section aria-label="prologue">
@@ -131,16 +121,12 @@ import "../styles/aboutme.css";
 
             <section aria-label="agentflow">
                 <AgentFlow />
-                <script type="module">
-                    import "../scripts/agentflow.ts";
-                </script>
+                <script type="module" src={agentflowJs}></script>
             </section>
 
             <section aria-label="risagpts">
                 <RisaGPTs />
-                <script type="module">
-                    import "../scripts/risagpts.ts";
-                </script>
+                <script type="module" src={risagptsJs}></script>
             </section>
 
             <section aria-label="transition">
@@ -156,9 +142,7 @@ import "../styles/aboutme.css";
 
             <section aria-label="ai-talent">
                 <AiTalent />
-                <script type="module">
-                    import "../scripts/aitalent.ts";
-                </script>
+                <script type="module" src={aitalentJs}></script>
             </section>
 
             <section aria-label="finale">
@@ -185,10 +169,8 @@ import "../styles/aboutme.css";
 
             <Aboutme />
 
-            <!-- ✅ フェードイン演出（poetic.ts）も同様にインラインimport -->
-            <script type="module">
-                import "../scripts/poetic.ts";
-            </script>
+            <!-- ✅ フェードイン演出（poetic.ts） -->
+            <script type="module" src={poeticJs}></script>
         </main>
     </body>
 </html>
