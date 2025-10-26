@@ -363,3 +363,31 @@
         width: 100%;
     }
 }
+
+/* iOS Safari 実機の高さブレ対策（100dvh/-webkit-fill-available） */
+@media (max-width: 960px) {
+    /* GPUヒントでチラつき/黒帯の再描画を抑制 */
+    .hero-left .hero-media img {
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        will-change: transform, opacity;
+    }
+
+    /* “dvh” はアドレスバーの出し入れに追従して安定 */
+    .hero-wrap,
+    .hero-left,
+    .hero-left .hero-media {
+        min-height: 100dvh;
+        height: 100dvh;
+    }
+
+    /* iOS固有の代替（古いiOS向け） */
+    @supports (-webkit-touch-callout: none) {
+        .hero-wrap,
+        .hero-left,
+        .hero-left .hero-media {
+            min-height: -webkit-fill-available;
+            height: -webkit-fill-available;
+        }
+    }
+}
