@@ -3,15 +3,10 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import { fileURLToPath } from 'node:url';
 
-// === GitHub Pages (project page) settings ===
-// 公開URL: https://YusukeUtsumi.github.io/my-portfolio2
-const site = 'https://meltlight.art'; // 末尾スラなし
-//const base = '/my-portfolio2';                  // リポジトリ名
-
 export default defineConfig({
-  site: 'https://YusukeUtsumi.github.io',
-  base: '/my-portfolio2',
-  output: 'static',    // デフォルトだが明示
+  site: 'https://meltlight.art', // ← 独自ドメイン
+  base: '/',                     // ← ルート配信なら '/'（もしくは項目ごと削除でもOK）
+  output: 'static',
   integrations: [react()],
   vite: {
     resolve: {
