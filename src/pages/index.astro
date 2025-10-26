@@ -7,8 +7,24 @@ import PoeticBlock from "../components/PoeticBlock.astro";
 import RisaGPTs from "@/components/RisaGPTs.astro";
 import Aboutme from "@/components/Aboutme.astro";
 
+import "../styles/global.css";
+import "../styles/hero.css";
+import "../styles/poetic.css";
+import "../styles/aitalent.css";
+import "../styles/silentguard.css";
+import "../styles/agentflow.css";
+import "../styles/risagpts.css";
+import "../styles/aboutme.css";
+
+import HeroScript from "../scripts/hero.ts?url";
+import AgentFlowScript from "../scripts/agentflow.ts?url";
+import AiTalentScript from "../scripts/aitalent.ts?url";
+import RisaGPTsScript from "../scripts/risagpts.ts?url";
+import PoeticScript from "../scripts/poetic.ts?url";
+
 import bgNoise from "../assets/bg_noise.webp";
 import favicon from "../assets/favicon.svg";
+import { modelPosition } from "three/tsl";
 ---
 
 <html lang="ja">
@@ -20,14 +36,6 @@ import favicon from "../assets/favicon.svg";
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/src/styles/global.css" />
-        <link rel="stylesheet" href="/src/styles/hero.css" />
-        <link rel="stylesheet" href="/src/styles/poetic.css" />
-        <link rel="stylesheet" href="/src/styles/aitalent.css" />
-        <link rel="stylesheet" href="/src/styles/silentguard.css" />
-        <link rel="stylesheet" href="/src/styles/agentflow.css" />
-        <link rel="stylesheet" href="/src/styles/risagpts.css"/>
-        <link rel="stylesheet" href="/src/styles/aboutme.css"/>
 
         <!-- ページ共通 背景／ノイズを index 側で一元管理 -->
         <style is:global>
@@ -105,7 +113,7 @@ import favicon from "../assets/favicon.svg";
         <main class="page">
             <section>
                 <Hero />
-                <script type="module" src="/src/scripts/hero.ts"></script>
+                <script type="module" src={HeroScript}></script>
             </section>
 
             <!-- ① Hero と AIタレントの間：序章の詩 -->
@@ -124,12 +132,12 @@ import favicon from "../assets/favicon.svg";
 
             <section aria-label="agentflow">
                 <AgentFlow />
-                <script type="module" src="/src/scripts/agentflow.ts"></script>
+                <script type="module" src={AgentFlowScript}></script>
             </section>
 
             <section aria-label="risagpts">
                 <RisaGPTs />
-                <script type="module" src="/src/scripts/risagpts.ts"></script>
+                <script type="module" src={RisaGPTsScript}></script>
             </section>
 
             <!-- ② AIタレント と 個人開発の間：遷移の詩 -->
@@ -146,7 +154,7 @@ import favicon from "../assets/favicon.svg";
 
             <section aria-label="ai-talent">
                 <AiTalent />
-                <script type="module" src="/src/scripts/aitalent.ts"></script>
+                <script type="module" src={AiTalentScript}></script>
             </section>
 
             <!-- ③ 終幕の詩：ラスト -->
@@ -176,7 +184,7 @@ import favicon from "../assets/favicon.svg";
             <Aboutme />
 
             <!-- Poetic のフェードイン -->
-            <script type="module" src="/src/scripts/poetic.ts"></script>
+            <script type="module" src={PoeticScript}></script>
         </main>
     </body>
 </html>
