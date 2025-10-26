@@ -1,3 +1,5 @@
+import { gsap } from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js";
+
 const root = document.querySelector('.hero-wrap');
 const orbsContainer = document.querySelector('.orbs');
 if (root && orbsContainer) {
