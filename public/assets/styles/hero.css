@@ -258,6 +258,7 @@
         padding: 0;
         margin: 0;
         width: 100vw;
+        overflow: hidden;
         max-width: 100vw;
         overflow: hidden;
     }
@@ -293,7 +294,7 @@
 
     .hero-left .hero-media {
         width: 100vw;
-        height: 100%;
+        height: 100svh;
         overflow: hidden;
     }
 
