@@ -1,7 +1,6 @@
 ---
 import "../styles/risagpts.css";
 
-/* ▼ SVGはアセットimport（URL文字列）で安全に解決 */
 import risaGptsSvgUrl from "../assets/RisaGPT.svg?url";
 
 const bullets = [
@@ -13,7 +12,6 @@ const bulletsEn = [
     "and created to seek empathy, not correctness."
 ];
 ---
-
 <section id="risagpts" class="rg-section">
     <div class="rg-container">
         <!-- 右：SVG（PC）／上：SVG（SP） -->
@@ -33,7 +31,9 @@ const bulletsEn = [
         <!-- 左：テキスト（PC）／下：テキスト（SP） -->
         <header class="rg-head">
             <p class="eyebrow">AI Talent × GPTs</p>
-            <h2 class="title">Risa GPTs</h2>
+            <h2 class="title">
+                Risa GPTs
+            </h2>
             <p class="lede">
                 「Risa」は温かみのあるAIを目指す。<br />
                 人のように感じ、<span>曖昧さや想い</span>に寄り添う。<br /><br />
@@ -64,7 +64,3 @@ const bulletsEn = [
     </div>
 </section>
 
-<!-- ▼ スクリプトは index.astro 側で BASE_URL 付き読み込み済み -->
-
-
-<script type="module" src="/src/scripts/risagpts.ts"></script>

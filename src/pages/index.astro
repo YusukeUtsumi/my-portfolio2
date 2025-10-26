@@ -1,24 +1,14 @@
 ---
 import Hero from "../components/Hero.astro";
 import AiTalent from "../components/AiTalent.astro";
+import SilentGuard from "../components/SilentGuard.astro";
 import AgentFlow from "../components/AgentFlow.astro";
 import PoeticBlock from "../components/PoeticBlock.astro";
 import RisaGPTs from "@/components/RisaGPTs.astro";
 import Aboutme from "@/components/Aboutme.astro";
 
-/* assets */
 import bgNoise from "../assets/bg_noise.webp";
 import favicon from "../assets/favicon.svg";
-
-/* global styles */
-import "../styles/global.css";
-import "../styles/hero.css";
-import "../styles/poetic.css";
-import "../styles/aitalent.css";
-import "../styles/silentguard.css";
-import "../styles/agentflow.css";
-import "../styles/risagpts.css";
-import "../styles/aboutme.css";
 ---
 
 <html lang="ja">
@@ -26,41 +16,46 @@ import "../styles/aboutme.css";
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
         <title>MeltLight</title>
-
-        <!-- favicon（assets import で安全） -->
         <link rel="icon" type="image/svg+xml" href={favicon.src} />
-
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap"
-            rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/src/styles/global.css" />
+        <link rel="stylesheet" href="/src/styles/hero.css" />
+        <link rel="stylesheet" href="/src/styles/poetic.css" />
+        <link rel="stylesheet" href="/src/styles/aitalent.css" />
+        <link rel="stylesheet" href="/src/styles/silentguard.css" />
+        <link rel="stylesheet" href="/src/styles/agentflow.css" />
+        <link rel="stylesheet" href="/src/styles/risagpts.css"/>
+        <link rel="stylesheet" href="/src/styles/aboutme.css"/>
 
+        <!-- ページ共通 背景／ノイズを index 側で一元管理 -->
         <style is:global>
             :root {
+                /* 全ページの暗部トーンを統一 */
                 --bg-base: #0f0f10;
                 --bg-ink: rgba(0, 0, 0, 0.65);
-                --noise-opacity: 0.06;
+                --noise-opacity: 0.06; /* 0.04–0.08 推奨 */
             }
-            html,
-            body {
+            html, body {
                 height: 100%;
                 background: var(--bg-base);
                 color-scheme: dark;
             }
+            /* 背景ノイズ（固定・全画面） */
             .bg-noise {
                 position: fixed;
                 inset: 0;
                 z-index: -2;
                 pointer-events: none;
-                /* 背景画像はインラインで assets のURLを適用 */
+                background-image: url("../images/bg_noise.webp");
                 background-repeat: repeat;
                 background-position: 50% 50%;
-                background-size: 480px 480px;
+                background-size: 480px 480px; /* 細かすぎたら 640px へ */
                 opacity: var(--noise-opacity);
                 image-rendering: auto;
             }
+            /* ビネット／奥行き（ごく薄く） */
             .bg-vignette {
                 position: fixed;
                 inset: -20vh;
@@ -69,11 +64,13 @@ import "../styles/aboutme.css";
                 background:
                     radial-gradient(60% 40% at 50% 30%, rgba(255, 255, 255, 0.035), transparent 60%),
                     radial-gradient(120% 90% at 50% 120%, var(--bg-ink), transparent 45%);
+                /* スクロール連動の視差を避けて常に安定 */
                 will-change: transform;
             }
+            /* セクション間の“継ぎ目”が見えない余白（上下フェザー用の薄い重なり） */
             .page section {
-                position: relative;
-                background: transparent;
+                    position: relative;
+                background: transparent; /* 各セクションCSSの背景は削除/透明に */
             }
             .page section::after {
                 content: "";
@@ -83,12 +80,10 @@ import "../styles/aboutme.css";
                 bottom: -1px;
                 height: clamp(64px, 8vw, 120px);
                 pointer-events: none;
-                background: linear-gradient(
-                    180deg,
-                    transparent 0%,
-                    rgba(14, 14, 18, 0.92) 100%
-                );
+                background: linear-gradient(180deg, transparent 0%, rgba(14, 14, 18, 0.92) 100%);
+                /* 各セクションの“下端”だけ軽くフェザー。上端はページ背景が拾う */
             }
+            /* モバイルの背景粗密が強すぎる時に少し抑える */
             @media (max-width: 768px) {
                 :root { --noise-opacity: 0.05; }
             }
@@ -99,19 +94,21 @@ import "../styles/aboutme.css";
     </head>
 
     <body>
-        <!-- 背景ノイズ（assetsのURLをインラインで適用） -->
+        <!-- 背景レイヤー（全ページ共通） -->
         <div
             class="bg-noise"
             style={`background-image:url(${bgNoise.src})`}
         ></div>
-
         <div class="bg-vignette"></div>
 
+        <!-- コンテンツ -->
         <main class="page">
             <section>
                 <Hero />
+                <script type="module" src="/src/scripts/hero.ts"></script>
             </section>
 
+            <!-- ① Hero と AIタレントの間：序章の詩 -->
             <section aria-label="prologue">
                 <PoeticBlock
                     lines={[
@@ -127,12 +124,15 @@ import "../styles/aboutme.css";
 
             <section aria-label="agentflow">
                 <AgentFlow />
+                <script type="module" src="/src/scripts/agentflow.ts"></script>
             </section>
 
             <section aria-label="risagpts">
                 <RisaGPTs />
+                <script type="module" src="/src/scripts/risagpts.ts"></script>
             </section>
 
+            <!-- ② AIタレント と 個人開発の間：遷移の詩 -->
             <section aria-label="transition">
                 <PoeticBlock
                     lines={[
@@ -146,8 +146,10 @@ import "../styles/aboutme.css";
 
             <section aria-label="ai-talent">
                 <AiTalent />
+                <script type="module" src="/src/scripts/aitalent.ts"></script>
             </section>
 
+            <!-- ③ 終幕の詩：ラスト -->
             <section aria-label="finale">
                 <PoeticBlock
                     lines={[
@@ -159,6 +161,7 @@ import "../styles/aboutme.css";
                 />
             </section>
 
+            <!-- ④ 終幕の詩：問い -->
             <section aria-label="end">
                 <PoeticBlock
                     lines={[
@@ -172,13 +175,8 @@ import "../styles/aboutme.css";
 
             <Aboutme />
 
-            <script type="module">
-                import '@/scripts/hero.ts';
-                import '@/scripts/agentflow.ts';
-                import '@/scripts/risagpts.ts';
-                import '@/scripts/aitalent.ts';
-                import '@/scripts/poetic.ts';
-            </script>
+            <!-- Poetic のフェードイン -->
+            <script type="module" src="/src/scripts/poetic.ts"></script>
         </main>
     </body>
 </html>

@@ -3,7 +3,6 @@ import "../styles/hero.css";
 import heroRisa from "@/assets/hero_risa.webp";
 import heroLilia from "@/assets/hero_lilia.webp";
 ---
-
 <section id="hero" class="hero" aria-labelledby="hero-title">
     <div class="hero-wrap" data-orbs-desktop="16" data-orbs-mobile="4">
         <!-- 左：実写（装飾扱いなら alt=""） -->
@@ -16,8 +15,8 @@ import heroLilia from "@/assets/hero_lilia.webp";
                 <img
                     src={heroRisa.src}
                     alt=""
-                    width={heroRisa.width ?? 1200}
-                    height={heroRisa.height ?? 1600}
+                    width="1200"
+                    height="1600"
                     decoding="async"
                     loading="eager"
                     fetchpriority="high"
@@ -36,8 +35,8 @@ import heroLilia from "@/assets/hero_lilia.webp";
                 <img
                     src={heroLilia.src}
                     alt=""
-                    width={heroLilia.width ?? 1200}
-                    height={heroLilia.height ?? 1600}
+                    width="1200"
+                    height="1600"
                     decoding="async"
                     loading="eager"
                     sizes="(max-width: 960px) 100vw, 50vw"
@@ -62,6 +61,5 @@ import heroLilia from "@/assets/hero_lilia.webp";
         </div>
     </div>
 
-    <!-- スクリプト -->
-    <script type="module" src={`${import.meta.env.BASE_URL}src/scripts/hero.ts`}></script>
+    <script type="module" src="/src/scripts/hero.ts"></script>
 </section>

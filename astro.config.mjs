@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 // === GitHub Pages (project page) settings ===
 // 公開URL: https://YusukeUtsumi.github.io/my-portfolio2
-const site = 'https://YusukeUtsumi.github.io'; // 末尾スラなし
-const base = '/my-portfolio2';                  // リポジトリ名
+const site = 'https://meltlight.art'; // 末尾スラなし
+//const base = '/my-portfolio2';                  // リポジトリ名
 
 export default defineConfig({
   site: 'https://YusukeUtsumi.github.io',

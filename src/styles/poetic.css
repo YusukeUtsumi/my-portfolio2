@@ -3,14 +3,15 @@ Poetic interlude block
 ========================= */
 .poetic {
     position: relative;
-    padding: 6rem 0 8rem;
+    padding: 6rem 0 8rem;  /* ← 下だけ増量して影の裾が境界に届かないようにする */
     background: #0f0f10;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
+    overflow: hidden;      /* ← はみ出し停止（以前は visible） */
 }
+
 
 /* コンテナ */
 .po-wrap {
@@ -21,7 +22,7 @@ Poetic interlude block
     text-align: center;
 }
 
-/* 既定：見える（JS無効でも読める） */
+/* 行テキスト */
 .po-line {
     font-family: "Zen Old Mincho", "Noto Serif JP", serif;
     font-weight: 300;
@@ -33,53 +34,91 @@ Poetic interlude block
     text-shadow:
         0 0 8px rgba(255,255,255,0.18),
         0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
-        0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
-        0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
-    transition: opacity 0.9s ease, transform 0.9s ease;
-}
-
-/* ▼ JSが「poetic.ts を読み込んだ」時だけ発動（初期は隠す→is-inで表示） */
-.poetic-ready .poetic:not(.is-in) .po-line {
+        0 0 50px var(--po-color-far, rgba(150,170,255,0.16)),  /* 56→50 */
+        0 0 80px var(--po-color-tail, rgba(120,140,255,0.08)); /* 90→80 */
     opacity: 0;
     transform: translateY(12px);
-}
-.poetic-ready .poetic.is-in .po-line {
-    opacity: 1;
-    transform: none;
+    transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
-/* 英文は影を少し控えめに／呼吸を長めに */
+
+/* 表示アニメ用クラス（JSで付与） */
+.po-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 光のベール 
+.po-glow {
+    position: absolute;
+    inset: -15% -15%;
+    background: radial-gradient(40% 55% at 50% 55%, rgba(180,180,255,0.08), rgba(0,0,0,0));
+    filter: blur(60px);
+    opacity: 0.7;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 0;
+} */
+
+/* --- 1) 円環グローを無効化（邪魔に感じる薄い光を撤去） --- */
+.po-glow {
+    display: none;           /* ← これだけで消える */
+    /* もしくは完全に消すならHTML側から.po-glow要素を削除 */
+}
+
+/* --- 2) 文字に“広めの色付きシャドウ”を付与 --- */
+.po-line {
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.18),
+        0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
+        0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
+        0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
+}
+
+/* ① 序章：中立寄り（やや青白） */
+section[aria-label="prologue"] .po-line {
+    --po-color-mid: rgba(195, 205, 255, 0.68);
+    --po-color-far: rgba(175, 190, 255, 0.54);
+    --po-color-tail: rgba(155, 170, 245, 0.34);
+}
+
+/* ② 境界：紫寄りで“境界の声”を表す */
+section[aria-label="transition"] .po-line {
+    --po-color-mid:  rgba(190,178,255,0.60);
+    --po-color-far:  rgba(168,155,240,0.46);
+    --po-color-tail: rgba(150,138,230,0.30);
+}
+
+/* ③ 終幕：冷たい光（青白方向） */
+section[aria-label="finale"] .po-line {
+    --po-color-mid:  rgba(185,200,255,0.64);
+    --po-color-far:  rgba(165,182,248,0.50);
+    --po-color-tail: rgba(145,162,238,0.32);
+}
+
+/* ④ 問い：無情な光（白方向） */
+section[aria-label="end"] .po-line {
+    --po-color-mid:  rgba(241, 241, 241, 0.64);
+    --po-color-far:  rgba(186, 186, 187, 0.5);
+    --po-color-tail: rgba(132,148,235,0.34);
+}
+
+/* 英文：影を少し控えめに */
 .po-line:lang(en) {
     text-shadow:
         0 0 6px rgba(255,255,255,0.14),
         0 0 24px var(--po-color-mid),
         0 0 48px var(--po-color-far),
         0 0 72px var(--po-color-tail);
+}
+
+/* 影の裾を切らない */
+.poetic {
+    overflow: visible;
+}
+
+/* 英文は呼吸を長くする（影の出方が自然に） */
+.po-line:lang(en) {
     letter-spacing: 0.02em;
     line-height: 1.55;
 }
-
-/* 光色のバリエーション（ラベルでスコープ） */
-section[aria-label="prologue"] .po-line {
-    --po-color-mid:  rgba(195,205,255,0.68);
-    --po-color-far:  rgba(175,190,255,0.54);
-    --po-color-tail: rgba(155,170,245,0.34);
-}
-section[aria-label="transition"] .po-line {
-    --po-color-mid:  rgba(190,178,255,0.60);
-    --po-color-far:  rgba(168,155,240,0.46);
-    --po-color-tail: rgba(150,138,230,0.30);
-}
-section[aria-label="finale"] .po-line {
-    --po-color-mid:  rgba(185,200,255,0.64);
-    --po-color-far:  rgba(165,182,248,0.50);
-    --po-color-tail: rgba(145,162,238,0.32);
-}
-section[aria-label="end"] .po-line {
-    --po-color-mid:  rgba(229,191,186,0.64);
-    --po-color-far:  rgba(200, 168, 163, 0.64);
-    --po-color-tail: rgba(229,191,186,0.34);
-}
-
-/* 装飾グロー（任意） */
-.po-glow { display: none; }
