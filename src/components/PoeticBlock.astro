@@ -16,8 +16,6 @@ const {
     tone  = 'dim',
     glow  = ''
 } = Astro.props as Props;
-
-import "../styles/poetic.css";
 ---
 <section
     class={`poetic ${align === 'left' ? 'po-left' : 'po-center'} ${tone === 'bright' ? 'po-bright' : 'po-dim'}`}
