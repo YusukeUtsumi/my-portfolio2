@@ -8,7 +8,6 @@ import Aboutme from "@/components/Aboutme.astro";
 
 import bgNoise from "../assets/bg_noise.webp";
 import favicon from "../assets/favicon.svg";
-import { modelPosition } from "three/tsl";
 ---
 
 <html lang="ja">
@@ -172,7 +171,10 @@ import { modelPosition } from "three/tsl";
                 />
             </section>
 
-            <Aboutme />
+            <section aria-label="about">
+                <Aboutme />
+                <script type="module" src="/assets/aboutme.js"></script>
+            </section>
 
             <!-- Poetic のフェードイン -->
             <script type="module" src="/assets/poetic.js"></script>

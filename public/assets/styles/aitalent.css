@@ -144,3 +144,35 @@ AI TALENT — Risa & Lilia
     }
 }
 
+/* ---- Risa caption spacing adjust ---- */
+.risa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+.risa img {
+    display: block;
+}
+
+/* Risa のキャプション距離を Lilia に合わせる（画像のサイズには影響なし） */
+.risa .cap {
+    margin-top: clamp(12px, 1.8vw, 20px); /* ← 距離だけ調整 */
+    text-align: center;
+    font-size: clamp(0.86rem, 1.4vw, 0.98rem);
+    line-height: 1.35;
+    color: rgba(255,255,255,0.78);
+    font-style: italic;
+}
+
+.cap--lilia {
+    text-align: center;       /* ← これだけで画像中央下に整列 */
+    display: block;
+    width: 100%;
+    margin-top: clamp(12px, 1.8vw, 20px); /* Risaとの距離統一 */
+}
+
+.cap small {
+    opacity: 0.85;
+}

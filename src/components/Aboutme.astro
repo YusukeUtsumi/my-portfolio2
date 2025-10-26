@@ -4,6 +4,20 @@ import linkedinIconUrl from "../assets/linkedin.svg?url";
 ---
 
 <section id="about" class="about-section" aria-labelledby="about-title">
+    <script type="module">
+        document.addEventListener("DOMContentLoaded", () => {
+            const sec = document.querySelector(".about-section");
+            if (!sec) return;
+            const io = new IntersectionObserver(([e]) => {
+                if (e.isIntersecting) {
+                    sec.classList.add("is-inview");
+                    io.disconnect();
+                }
+            }, { threshold: 0.15 });
+            io.observe(sec);
+        });
+    </script>
+
     <h2 id="about-title" class="about-title">About Me</h2>
     <div class="about-content">
         <p class="about-name">Yusuke Utsumi</p>

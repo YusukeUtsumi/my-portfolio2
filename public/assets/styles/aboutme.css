@@ -1,8 +1,8 @@
 /* =============================
-   About Me — Scroll-driven Fade
+    About Me — JS-triggered Fade
    ============================= */
 
-/* 1) セクション全体：入ってきた時に“ふわっ” */
+/* 1) セクション全体（初期状態は静止：GSAPが入場時にフェード） */
 .about-section {
     display: flex;
     flex-direction: column;
@@ -17,47 +17,16 @@
     letter-spacing: 0.02em;
     overflow: hidden;
 
-    /* 初期状態（静止） */
+    /* 初期値（JSが to({opacity:1,y:0}) にする） */
     opacity: 0;
     transform: translate3d(0, 24px, 0);
     will-change: transform, opacity, filter;
 
-    /* ★ スクロール連動（入場時にだけ再生） */
-    animation-name: aboutIn, aboutSoften;
-    animation-duration: 1s, 680ms;
-    animation-fill-mode: both, both;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1), ease-out;
-
-    /* ここがポイント：セクションの“view”タイムラインで駆動 */
-    animation-timeline: view(), view();
-    /* 最初の 20% ほど入ったら 40% 区間で再生（好みに応じて微調整） */
-    animation-range: entry 20% cover 40%, entry 20% cover 40%;
+    content-visibility: auto;   /* 対応ブラウザで初回負荷↓ */
+    contain: layout paint;      /* 不要な再計算の波及を抑制 */
 }
 
-/* 2) 背景グロー：入場時に一度だけ“ふわっ” */
-.about-section::after {
-    content: "";
-    position: absolute;
-    inset: -10% -10%;
-    pointer-events: none;
-    z-index: 0;
-    background:
-        radial-gradient(32% 22% at 50% 54%, rgba(200, 210, 255, 0.10), transparent 60%),
-        radial-gradient(60% 35% at 50% 70%, rgba(120, 140, 255, 0.06), transparent 70%);
-    opacity: 0;
-    transform: scale(1.04);
-    will-change: opacity, transform;
-
-    animation-name: bloomOnce;
-    animation-duration: 720ms;
-    animation-fill-mode: both;
-    animation-timing-function: ease-out;
-
-    animation-timeline: view();
-    animation-range: entry 22% cover 30%;
-}
-
-/* 3) 中の要素は段階的に（タイムラインは同じ“view”だが、rangeをずらす） */
+/* 2) 子要素（段階的に出すための初期値だけ） */
 .about-content { position: relative; z-index: 1; }
 
 .about-name,
@@ -68,42 +37,82 @@
     opacity: 0;
     transform: translate3d(0, 10px, 0);
     will-change: transform, opacity;
-
-    animation-name: aboutItem;
-    animation-duration: 0.9s;
-    animation-fill-mode: both;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-    animation-timeline: view();
 }
 
-/* 段階的に入る“擬似スタッガー” */
-.about-name    { animation-range: entry 24% cover 24%; }
-.about-role    { animation-range: entry 28% cover 24%; }
-.about-intro   { animation-range: entry 32% cover 24%; }
-.about-links   { animation-range: entry 36% cover 24%; }
-.about-contact { animation-range: entry 40% cover 24%; }
-
-/* タイトル等の静的スタイルは既存のままでOK（略） */
-
-/* ===== Keyframes（流用） ===== */
-@keyframes aboutIn {
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-@keyframes aboutSoften {
-    0% { filter: blur(6px); }
-    60% { filter: blur(3px); }
-    100% { filter: blur(0px); }
-}
-@keyframes bloomOnce {
-    0% { opacity: 0; transform: scale(1.02); }
-    35% { opacity: 0.28; transform: scale(1.00); }
-    100% { opacity: 0; transform: scale(1.00); }
-}
-@keyframes aboutItem {
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
+/* 3) 背景グロー（静的。JSでは動かさない） */
+.about-section::after {
+    content: "";
+    position: absolute;
+    inset: -10% -10%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(32% 22% at 50% 54%, rgba(200, 210, 255, 0.10), transparent 60%),
+        radial-gradient(60% 35% at 50% 70%, rgba(120, 140, 255, 0.06), transparent 70%);
+    opacity: 0.12;             /* ほんのり光らせる（アニメしない） */
+    transform: none;
 }
 
-/* モーション軽減 */
+/* 4) リンク（X／LinkedIn）を常に横並びに固定 */
+.about-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;          /* 折り返し禁止 */
+}
+.about-links a {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.about-links img,
+.about-links svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* connect ボタン */
+.about-contact {
+    margin-top: 1.8rem;
+    text-align: center;
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+}
+
+.connect-btn {
+    display: inline-block;
+    padding: 0.6rem 1.8rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.9);
+    border: 1px solid rgba(229, 191, 186, 0.25);
+    border-radius: 2rem;
+    background: transparent;
+    text-decoration: none;
+    transition:
+        color 0.35s ease,
+        border-color 0.35s ease,
+        background-color 0.35s ease,
+        transform 0.35s ease;
+}
+.connect-btn:hover {
+    color: #fff;
+    border-color: rgba(210, 180, 255, 0.6);
+    background-color: rgba(145, 162, 238, 0.08);
+    transform: translateY(-2px);
+}
+
+/* 5) モーション軽減（ユーザー設定尊重） */
 @media (prefers-reduced-motion: reduce) {
     .about-section,
     .about-name,
@@ -112,9 +121,8 @@
     .about-links,
     .about-contact,
     .about-section::after {
-        animation: none !important;
         opacity: 1 !important;
         transform: none !important;
-        filter: none !important;
+        transition: none !important;
     }
 }
