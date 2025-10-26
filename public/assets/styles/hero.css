@@ -307,91 +307,59 @@
 }
 
 /* =============================
-   Mobile full-bleed (Risa only)
+    Mobile — Risa only (stable full-width)
    ============================= */
 @media (max-width: 960px) {
-    /* セクション自体をフルブリード化（親の左右余白を打ち消す） */
+    /* Hero全体 */
     .hero {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .hero-wrap {
-        /* 画面端まで広げる */
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
-
-        /* 単一カラム＋中央寄せ */
-        display: grid;
-        grid-template-columns: 1fr;
-        justify-items: center;
-        align-items: center;
-
-        /* はみ出し防止 */
+        padding: 0;
+        margin: 0;
         overflow: hidden;
+        width: 100vw;
+        max-width: 100vw;
     }
 
     /* 右側はスマホでは出さない */
     .hero-right { display: none; }
 
-    /* Risa 画像を全幅に（枠も画像も両方指定） */
-    .hero-left,
+    /* ラッパーを1カラム化して通常幅で安定化 */
+    .hero-wrap {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+        min-height: 100svh;
+        position: relative;
+    }
+
+    /* Risaだけ全幅で中央に */
+    .hero-left {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
     .hero-left .hero-media {
         width: 100vw;
         max-width: 100vw;
-        border-radius: 0;              /* 黒の角丸縁取りを消したい場合 */
-        box-shadow: none;
+        height: 100svh;
+        overflow: hidden;
     }
 
     .hero-left .hero-media img {
-        display: block;
-        width: 100vw;
-        height: auto;                  /* 縦は自然比率でOK */
-        object-fit: cover;             /* 余白が出ないようにフィット */
-    }
-}
-
-/* =============================
-   Mobile — Risa only, centered full-bleed
-   ============================= */
-@media (max-width: 960px) {
-    /* 右側は非表示のまま */
-    .hero-right { display: none; }
-
-    /* 親コンテナの左右余白や max-width の影響を無効化して、画面端まで広げる */
-    .hero-wrap {
-        position: relative;
-        width: 100vw;
-        /* ← これがキモ：親のコンテンツ幅制限を“はみ出して”フルブリードにする */
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
-        overflow: hidden;
-        display: block; /* gridのままでもOKだが、制御しやすくするため block に */
-    }
-
-    /* Risa を一枚だけ、中央基準で全面カバー */
-    .hero-left {
-        position: relative;
-        width: 100vw;
-        height: 100svh;              /* アドレスバー縮小にも追従 */
-        overflow: hidden;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .hero-left .hero-media,
-    .hero-left .hero-media img {
-        position: absolute;
-        inset: 0;
         width: 100%;
         height: 100%;
-        max-width: none;             /* 親の max-width 影響を受けない */
-        object-fit: cover;           /* 余白なくフィット */
-        object-position: center;     /* 中央揃え */
+        object-fit: cover;
+        object-position: center;
         display: block;
     }
 
-    /* 念のため、外側で横スクロールが出ないように */
-    html, body { overflow-x: hidden; }
+    /* 余計な横スクロール防止 */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+    }
 }
