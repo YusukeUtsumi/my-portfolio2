@@ -112,3 +112,35 @@ AI TALENT — Risa & Lilia
         opacity: 0.9;
     }
 }
+
+/* 画像はブロック化＆フィット（ここを最終形に集約） */
+.risa img,
+.lilia-item img {
+    display: block;
+    width: 100%;
+    height: 100%;              /* ← ここで統一。前半にあった height:auto は削除 */
+    object-fit: cover;
+    border-radius: 16px;
+    filter: brightness(1.05);
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 80px rgba(255,180,250,0.1);
+    transition: transform .6s ease, filter .6s ease;
+    backface-visibility: hidden;
+    transform: translateZ(0);  /* GPUヒント */
+}
+
+/* hover はそのままでOK */
+.risa img:hover, .lilia-item img:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.08);
+}
+
+/* 動きを抑えたい環境向け（アニメを最小化） */
+@media (prefers-reduced-motion: reduce) {
+    .risa img, .lilia-item img,
+    .ai-head {
+        transition: none !important;
+    }
+}
+
