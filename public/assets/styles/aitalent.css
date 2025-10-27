@@ -112,3 +112,36 @@ AI TALENT — Risa & Lilia
         filter: none !important;
     }
 }
+
+/* === Liliaキャプションずれ修正（末尾に追記） === */
+
+/* 画像は高さを自動に（幅基準で揃える） */
+.risa img,
+.lilia-item img {
+    height: auto !important;          /* ← 100% を打ち消す */
+    display: block;
+    margin-inline: auto;              /* 画像自体も中央に */
+}
+
+/* 画像とキャプションを縦積みで中央寄せ */
+.lilia-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;              /* 横方向センター */
+}
+
+/* キャプション幅は画像と同じ列幅で中央揃え */
+.cap--lilia {
+    width: 100%;
+    text-align: center;
+    margin-top: clamp(12px, 1.8vw, 20px);  /* 既存値に合わせる */
+    line-height: 1.35;
+}
+
+/* スマホでも同様に強制（保険） */
+@media (max-width: 768px) {
+    .risa img,
+    .lilia-item img { height: auto !important; }
+    .lilia-item { align-items: center; }
+    .cap--lilia { text-align: center; }
+}
