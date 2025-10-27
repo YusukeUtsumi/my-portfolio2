@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const sec = document.querySelector(".about-section");
     if (!sec) return;
 
-    // 対象（セクション全体＋中身まとめて一気にフェード）
     const targets = [
         sec,
         sec.querySelector(".about-name"),
@@ -17,21 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
         sec.querySelector(".about-contact"),
     ].filter(Boolean);
 
-    // 初期値
-    gsap.set(targets, { autoAlpha: 0, y: 30 });
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // スクロールでふわっと1回だけ上がる
+    // ===== スマホ：アニメ無効・即表示 =====
+    if (isMobile) {
+        gsap.set(targets, { autoAlpha: 1, y: 0, clearProps: "all" });
+        return; // ScrollTriggerは作らない（PC挙動に影響なし）
+    }
+
+    // ===== PC：既存のフェードを維持 =====
+    gsap.set(targets, { autoAlpha: 0, y: 30 }); // 現行初期値を踏襲
     gsap.to(targets, {
         autoAlpha: 1,
         y: 0,
         ease: "power2.out",
         duration: 1.4,
-        stagger: 0.0, // 一斉に動く
+        stagger: 0.0, // 一斉に
         scrollTrigger: {
             trigger: sec,
             start: "top 80%",
-            once: true,
+            once: true
         },
-        clearProps: "transform",
+        clearProps: "transform"
     });
 });

@@ -2,7 +2,7 @@
     About Me — JS-triggered Fade
    ============================= */
 
-/* 1) セクション全体（初期状態は静止：GSAPが入場時にフェード） */
+/* 1) セクション全体（PCはJSでフェード入場） */
 .about-section {
     display: flex;
     flex-direction: column;
@@ -17,16 +17,16 @@
     letter-spacing: 0.02em;
     overflow: hidden;
 
-    /* 初期値（JSが to({opacity:1,y:0}) にする） */
+    /* 初期値（PCではJSが to({opacity:1,y:0})） */
     opacity: 0;
     transform: translate3d(0, 24px, 0);
     will-change: transform, opacity, filter;
 
-    content-visibility: auto;   /* 対応ブラウザで初回負荷↓ */
-    contain: layout paint;      /* 不要な再計算の波及を抑制 */
+    content-visibility: auto;
+    contain: layout paint;
 }
 
-/* 2) 子要素（段階的に出すための初期値だけ） */
+/* 2) 子要素（PCの段階的入場用の初期値） */
 .about-content { position: relative; z-index: 1; }
 
 .about-name,
@@ -39,7 +39,7 @@
     will-change: transform, opacity;
 }
 
-/* 3) 背景グロー（静的。JSでは動かさない） */
+/* 3) 背景グロー（静的） */
 .about-section::after {
     content: "";
     position: absolute;
@@ -49,17 +49,17 @@
     background:
         radial-gradient(32% 22% at 50% 54%, rgba(200, 210, 255, 0.10), transparent 60%),
         radial-gradient(60% 35% at 50% 70%, rgba(120, 140, 255, 0.06), transparent 70%);
-    opacity: 0.12;             /* ほんのり光らせる（アニメしない） */
+    opacity: 0.12;
     transform: none;
 }
 
-/* 4) リンク（X／LinkedIn）を常に横並びに固定 */
+/* 4) リンク行 */
 .about-links {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 12px;
-    flex-wrap: nowrap;          /* 折り返し禁止 */
+    flex-wrap: nowrap;
 }
 .about-links a {
     display: inline-flex;
@@ -79,7 +79,7 @@
     transform: translateZ(0);
 }
 
-/* connect ボタン */
+/* connect ボタン（PCはCSSアニメ残す） */
 .about-contact {
     margin-top: 1.8rem;
     text-align: center;
@@ -88,31 +88,7 @@
     animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
 }
 
-.connect-btn {
-    display: inline-block;
-    padding: 0.6rem 1.8rem;
-    font-size: 0.95rem;
-    letter-spacing: 0.12em;
-    text-transform: lowercase;
-    color: rgba(240, 240, 240, 0.9);
-    border: 1px solid rgba(229, 191, 186, 0.25);
-    border-radius: 2rem;
-    background: transparent;
-    text-decoration: none;
-    transition:
-        color 0.35s ease,
-        border-color 0.35s ease,
-        background-color 0.35s ease,
-        transform 0.35s ease;
-}
-.connect-btn:hover {
-    color: #fff;
-    border-color: rgba(210, 180, 255, 0.6);
-    background-color: rgba(145, 162, 238, 0.08);
-    transform: translateY(-2px);
-}
-
-/* 5) モーション軽減（ユーザー設定尊重） */
+/* 5) モーション軽減 */
 @media (prefers-reduced-motion: reduce) {
     .about-section,
     .about-name,
@@ -124,5 +100,21 @@
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ===== スマホはフェード無効・即表示（JSと二重で担保） ===== */
+@media (max-width: 768px) {
+    .about-section,
+    .about-name,
+    .about-role,
+    .about-intro,
+    .about-links,
+    .about-contact {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important; /* connectボタンのCSSアニメも停止 */
     }
 }
