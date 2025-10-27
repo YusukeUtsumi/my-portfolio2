@@ -4,19 +4,39 @@ gsap.registerPlugin(ScrollTrigger);
 
 function initPoetic() {
     const isSmall = window.matchMedia("(max-width: 768px)").matches;
-    const startValue = isSmall ? "top 98%" : "top 78%"; // ← 後半でも確実に入るよう、さらに手前
 
+    // ===== スマホはアニメーションを無効化 =====
+    if (isSmall) {
+        // 行要素をすべて即表示
+        document.querySelectorAll('[data-poetic] .po-line').forEach(el => {
+            el.classList.add('visible');
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+
+        // 光のエフェクトなども非表示
+        document.querySelectorAll('.po-glow').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        // ScrollTriggerを無効化して終了
+        return;
+    }
+
+    // ===== PCのみアニメーションを有効化 =====
+    const startValue = "top 78%";
     const blocks = document.querySelectorAll('[data-poetic]');
+
     blocks.forEach((block) => {
         const lines = block.querySelectorAll('.po-line');
-        const glow  = block.querySelector('.po-glow');
+        const glow = block.querySelector('.po-glow');
         if (!lines.length) return;
 
         ScrollTrigger.create({
             trigger: block,
-            start: startValue,          // ← ここ重要
+            start: startValue,
             once: true,
-            invalidateOnRefresh: true,  // ← 再計算を有効化
+            invalidateOnRefresh: true,
             onEnter: () => {
                 const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
                 if (glow) {
@@ -27,13 +47,13 @@ function initPoetic() {
                     opacity: 1,
                     y: 0,
                     duration: 0.6,
-                    stagger: isSmall ? 0.05 : 0.08
+                    stagger: 0.08
                 }, 0.05);
             }
         });
     });
 
-    // 画像が後から読み込まれて高さが変わる → 必ず再計算
+    // 画像・フォント読み込み後に位置を再計算
     const imgs = Array.from(document.images);
     imgs.forEach(img => {
         if (!img.complete) {
@@ -42,22 +62,18 @@ function initPoetic() {
         }
     });
 
-    // フォント読み込み完了後にも再計算（Safari/Chrome両方で効く）
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => ScrollTrigger.refresh());
     }
 
-    // アドレスバーの開閉・回転・復帰で再計算
     window.addEventListener("orientationchange", () => ScrollTrigger.refresh());
     document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") ScrollTrigger.refresh();
     });
-
-    // モバイルのアドレスバーが落ち着くタイミングで追い refresh
     setTimeout(() => ScrollTrigger.refresh(), 400);
 }
 
-// DOM とリソースの両方が揃ってから初期化（後半ズレ対策）
+// DOMとリソースが揃ってから初期化
 if (document.readyState === "complete") {
     initPoetic();
 } else {
