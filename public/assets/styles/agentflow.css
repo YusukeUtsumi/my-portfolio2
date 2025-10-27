@@ -120,11 +120,6 @@
     animation: af-fade 900ms ease both;
 }
 
-@media (min-width: 960px) {
-    .af-section .visual-wrap { justify-self: start; }  /* 左配置の対称性を保証 */
-    .af-frame { width: min(640px, 46vw); }             /* ← 安定する“定規” */
-}
-
 /* SVG 表示（SilentGuard と同じスケール） */
 .af-svg {
     width: 78%;
@@ -142,4 +137,17 @@
 
 @media (prefers-reduced-motion: reduce) {
     .af-frame { animation: none !important; }
+}
+
+/* ===== スマホはCSSアニメも完全停止・即表示に ===== */
+@media (max-width: 959px) {
+    .af-frame,
+    .device-frame { /* device-frame が併用されている場合にも対応 */
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .af-glow {
+        display: none !important;
+    }
 }
