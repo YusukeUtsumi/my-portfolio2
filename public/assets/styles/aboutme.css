@@ -88,6 +88,30 @@
     animation: itemUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
 }
 
+.connect-btn {
+    display: inline-block;
+    padding: 0.6rem 1.8rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.9);
+    border: 1px solid rgba(229, 191, 186, 0.25);
+    border-radius: 2rem;
+    background: transparent;
+    text-decoration: none;
+    transition:
+        color 0.35s ease,
+        border-color 0.35s ease,
+        background-color 0.35s ease,
+        transform 0.35s ease;
+}
+.connect-btn:hover {
+    color: #fff;
+    border-color: rgba(210, 180, 255, 0.6);
+    background-color: rgba(145, 162, 238, 0.08);
+    transform: translateY(-2px);
+}
+
 /* 5) モーション軽減 */
 @media (prefers-reduced-motion: reduce) {
     .about-section,
