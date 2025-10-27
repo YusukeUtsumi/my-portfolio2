@@ -97,7 +97,7 @@
         inset 0 1px rgba(255, 255, 255, 0.05);
     display: grid;
     place-items: center;
-    /* animation: rg-fade 900ms ease both; ← これを削除 */
+    /* CSSの入場アニメは付けない（JS主導に統一） */
 }
 
 .rg-svg {
@@ -106,4 +106,18 @@
     display: block;
     opacity: 0.95;
     filter: drop-shadow(0 0 10px rgba(255, 119, 0, 0.3));
+}
+
+/* ===== スマホは CSS/JS ともにフェード無効 ===== */
+@media (max-width: 768px) {
+    .rg-frame {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+    }
+    .rg-head {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .rg-glow { display: none !important; }
 }
