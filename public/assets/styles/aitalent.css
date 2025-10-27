@@ -124,6 +124,7 @@ AI TALENT — Risa & Lilia
 }
 
 /* 画像とキャプションを縦積みで中央寄せ */
+.risa-item,
 .lilia-item {
     display: flex;
     flex-direction: column;
