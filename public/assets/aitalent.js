@@ -26,10 +26,12 @@ stripes.forEach((s) => {
     });
 });
 
-// 3) フェード（テキスト先 → 画像後追い）を“なめらか”に
+// 3) フェード（テキスト先 → 画像後追い）
 document.addEventListener("DOMContentLoaded", () => {
     const sections = Array.from(document.querySelectorAll(".ai-section"));
     if (!sections.length) return;
+
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     sections.forEach((section) => {
         const head = section.querySelector(".ai-head");                 // テキスト
@@ -37,11 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const liliaImgs = Array.from(section.querySelectorAll(".lilia-item img")); // Lilia画像群
         const imgs = [risaImg, ...liliaImgs].filter(Boolean);
 
-        // GPUヒントを先に与える（カクつき減少）
+        // スマホはアニメ無効・即表示
+        if (isMobile) {
+            if (head) gsap.set(head, { autoAlpha: 1, y: 0 });
+            imgs.forEach((img) => {
+                gsap.set(img, { autoAlpha: 1, y: 0, filter: "none" });
+            });
+            return; // ScrollTriggerを作らない（PC挙動に影響なし）
+        }
+
+        // ===== PC版：既存アニメーションそのまま維持 =====
         if (head) head.style.willChange = "transform, opacity";
         imgs.forEach((img) => { img.style.willChange = "transform, opacity"; });
 
-        // 初期値：少しだけ移動量を減らし、blurで“とろみ”をつける
+        // 初期値
         gsap.set(head, { autoAlpha: 0, y: 14 });
         gsap.set(imgs, { autoAlpha: 0, y: 16, filter: "blur(2px)" });
 
@@ -49,18 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
             defaults: { ease: "power3.out", immediateRender: false },
             scrollTrigger: {
                 trigger: section,
-                start: "top 76%",          // 72%→76%へ少し遅らせて余裕を作る
+                start: "top 76%",  // PCは従来通り
                 once: true,
                 invalidateOnRefresh: true
             }
         });
 
-        // テキスト → Risa → Lilia群（短い重なり＆軽いスタッガー）
+        // テキスト → Risa → Lilia群
         tl.to(head, { autoAlpha: 1, y: 0, duration: 0.48, clearProps: "transform" })
             .to(risaImg, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.52, clearProps: "transform,filter" }, "-=0.18")
             .to(liliaImgs, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.46, stagger: 0.08, clearProps: "transform,filter" }, "-=0.26");
 
-        // 遅延読み込みで高さが変わる場合に備えて refresh
+        // 遅延読み込み対策
         imgs.forEach((img) => {
             if (!img) return;
             if (img.complete) return;
@@ -70,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         window.addEventListener("load", () => {
-            // ページ全体のロード後にも保険で再計算
             ScrollTrigger.refresh();
         });
     });

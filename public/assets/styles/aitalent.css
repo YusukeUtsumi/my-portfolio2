@@ -1,11 +1,10 @@
-
 /* =============================
 AI TALENT — Risa & Lilia
 ============================= */
 .ai-section {
     position: relative;
     padding: clamp(48px, 7vw, 96px) min(4vw, 32px);
-    background: #0f0f10; /* 単色化 */
+    background: #0f0f10;
     overflow: hidden;
 }
 
@@ -71,33 +70,25 @@ AI TALENT — Risa & Lilia
    =========================== */
 @media (max-width: 768px) {
     .ai-grid {
-        display: grid;
-        grid-template-columns: 1fr;              /* 1カラム化 */
-        gap: clamp(14px, 3.5vw, 20px);           /* 余白は控えめに */
+        grid-template-columns: 1fr;
+        gap: clamp(14px, 3.5vw, 20px);
         align-items: start;
     }
 
-    /* 並び順：上にRisa、下にLilia（必要なら入れ替えてOK） */
     .ai-grid .risa   { order: 1; }
     .ai-grid .lilia  { order: 2; }
 
-    /* 画像の見栄えをモバイル寄せ（縦で大きく） */
     .risa img,
     .lilia-item img {
         width: 100%;
         height: auto;
-        display: block;
         border-radius: 14px;
         object-fit: cover;
-        /* 端末ごとに統一感を出すならアスペクト比を指定（任意） */
-        /* aspect-ratio: 4 / 5; */
-        /* モバイルでは影を少し控えめにすると締まる */
         box-shadow:
             0 18px 48px rgba(0,0,0,0.45),
             0 0 48px rgba(0,0,0,0.12);
     }
 
-    /* タイトルと説明の余白・サイズ感を微調整 */
     .ai-title {
         font-size: clamp(24px, 6.2vw, 32px);
         line-height: 1.18;
@@ -111,68 +102,13 @@ AI TALENT — Risa & Lilia
         font-size: clamp(0.9rem, 1.6vw, 1rem);
         opacity: 0.9;
     }
-}
 
-/* 画像はブロック化＆フィット（ここを最終形に集約） */
-.risa img,
-.lilia-item img {
-    display: block;
-    width: 100%;
-    height: 100%;              /* ← ここで統一。前半にあった height:auto は削除 */
-    object-fit: cover;
-    border-radius: 16px;
-    filter: brightness(1.05);
-    box-shadow:
-        0 30px 80px rgba(0,0,0,0.5),
-        0 0 80px rgba(255,180,250,0.1);
-    transition: transform .6s ease, filter .6s ease;
-    backface-visibility: hidden;
-    transform: translateZ(0);  /* GPUヒント */
-}
-
-/* hover はそのままでOK */
-.risa img:hover, .lilia-item img:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.08);
-}
-
-/* 動きを抑えたい環境向け（アニメを最小化） */
-@media (prefers-reduced-motion: reduce) {
-    .risa img, .lilia-item img,
-    .ai-head {
-        transition: none !important;
+    /* ===== スマホはフェード無効 ===== */
+    .ai-head,
+    .risa img,
+    .lilia-item img {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
     }
-}
-
-/* ---- Risa caption spacing adjust ---- */
-.risa {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-}
-
-.risa img {
-    display: block;
-}
-
-/* Risa のキャプション距離を Lilia に合わせる（画像のサイズには影響なし） */
-.risa .cap {
-    margin-top: clamp(12px, 1.8vw, 20px); /* ← 距離だけ調整 */
-    text-align: center;
-    font-size: clamp(0.86rem, 1.4vw, 0.98rem);
-    line-height: 1.35;
-    color: rgba(255,255,255,0.78);
-    font-style: italic;
-}
-
-.cap--lilia {
-    text-align: center;       /* ← これだけで画像中央下に整列 */
-    display: block;
-    width: 100%;
-    margin-top: clamp(12px, 1.8vw, 20px); /* Risaとの距離統一 */
-}
-
-.cap small {
-    opacity: 0.85;
 }
