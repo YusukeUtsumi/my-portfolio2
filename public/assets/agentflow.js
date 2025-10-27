@@ -1,74 +1,59 @@
 import gsap from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js";
 import { ScrollTrigger } from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger.js";
-
 gsap.registerPlugin(ScrollTrigger);
 
-const section = document.querySelector("#agentflow, .af-section");
-if (section) {
-    const head  = section.querySelector(".af-head");
-    // panel は .af-frame / .device-frame どちらでも対応
-    const panel = section.querySelector(".af-frame") || section.querySelector(".device-frame");
-    const glow  = section.querySelector(".af-glow");
+// AgentFlow：右パネル → テキストの順で入場（RisaGPTsと同じ構成）
+document.addEventListener("DOMContentLoaded", () => {
+    const section = document.querySelector("#agentflow") || document.querySelector(".af-section");
+    if (!section) return;
+
+    const head  = section.querySelector(".af-head");           // テキスト側
+    const panel = section.querySelector(".af-frame") || section.querySelector(".device-frame"); // 右側パネル
+    const glow  = section.querySelector(".af-glow");           // 任意のグロー
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // ===== スマホ：アニメ無効・即表示 =====
+    // ===== スマホはアニメ無効・即表示 =====
     if (isMobile) {
         if (head)  gsap.set(head,  { opacity: 1, y: 0 });
         if (panel) gsap.set(panel, { opacity: 1, y: 0 });
         if (glow)  glow.style.display = "none";
-        // ScrollTrigger を作らず終了（PC挙動に影響なし）
-        return;
+        return; // ScrollTriggerを作らない
     }
 
-    // ===== PC：フェード（ScrollTrigger）を復活 =====
-    if (head || panel) {
-        gsap.set([head, panel].filter(Boolean), { opacity: 0, y: 24 });
+    // ===== PC：RisaGPTsと同じ“タイムライン直付け＋start: top 72%”で復旧 =====
+    // 初期状態
+    gsap.set([head, panel].filter(Boolean), { opacity: 0, y: 24 });
+    if (glow) gsap.set(glow, { opacity: 0 });
 
-        ScrollTrigger.create({
+    // タイムライン（RisaGPTsの実装方式に揃える）
+    const tl = gsap.timeline({
+        defaults: { ease: "power2.out", immediateRender: false },
+        scrollTrigger: {
             trigger: section,
-            start: "top 72%",          // 画面の72%地点に来たら発火（従来相当）
+            start: "top 72%",
             once: true,
-            invalidateOnRefresh: true,
-            onEnter: () => {
-                const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-                if (panel) tl.to(panel, { opacity: 1, y: 0, duration: 0.6 });
-                if (head)  tl.to(head,  { opacity: 1, y: 0, duration: 0.6 }, "-=0.2");
-            }
-        });
-    }
-
-    // PCのみの追加演出（任意・従来どおり維持）
-    ScrollTrigger.matchMedia({
-        "(min-width: 1024px)": function () {
-            if (glow) {
-                gsap.to(glow, {
-                    opacity: 0.5,
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "top center",
-                        end: "+=80%",
-                        scrub: 0.5
-                    }
-                });
-            }
+            invalidateOnRefresh: true
         }
     });
 
-    // レイアウト変動対策（後読み画像/フォント）
-    const imgs = Array.from(document.images);
-    imgs.forEach(img => {
-        if (!img.complete) {
-            img.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
-            img.addEventListener("error", () => ScrollTrigger.refresh(), { once: true });
+    // パネル → テキスト（重なり-0.2s）＋グロー
+    if (panel) tl.to(panel, { opacity: 1, y: 0, duration: 0.6 });
+    if (head)  tl.to(head,  { opacity: 1, y: 0, duration: 0.6 }, "-=0.2");
+    if (glow)  tl.to(glow,  { opacity: 0.5, duration: 0.6 }, 0.15);
+
+    // 遅延確定要素で高さが変わった場合の再計算（画像・フォント）
+    const img = panel ? panel.querySelector("img") : null;
+    if (img) {
+        if (img.complete) {
+            ScrollTrigger.refresh();
+        } else {
+            img.addEventListener("load", () => {
+                requestAnimationFrame(() => ScrollTrigger.refresh());
+            }, { once: true });
         }
-    });
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => ScrollTrigger.refresh());
     }
-    window.addEventListener("orientationchange", () => ScrollTrigger.refresh());
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") ScrollTrigger.refresh();
+    window.addEventListener("load", () => {
+        ScrollTrigger.refresh();
     });
-    setTimeout(() => ScrollTrigger.refresh(), 350);
-}
+});

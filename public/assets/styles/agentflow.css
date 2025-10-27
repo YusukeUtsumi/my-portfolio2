@@ -71,7 +71,6 @@
     border-radius: 0.75rem;
     font-weight: 600;
 }
-
 .af-head .en {
     display: block;
     color: rgba(255,255,255,0.65);
@@ -93,7 +92,7 @@
     inset: -18% -10% auto -10%;
     height: 52%;
     filter: blur(22px);
-    opacity: 0;
+    opacity: 0;               /* JSで0→0.5へ */
     pointer-events: none;
     mix-blend-mode: screen;
 }
@@ -111,6 +110,7 @@
         inset 0 1px rgba(255, 255, 255, 0.05);
     display: grid;
     place-items: center;
+    /* CSS側の入場アニメは付けない（JS主導に統一） */
 }
 
 /* SVG表示 */
@@ -120,11 +120,6 @@
     display: block;
     opacity: 0.95;
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
-}
-
-/* ===== フェードはJSで制御（PCのみ）。CSSは邪魔しない ===== */
-@media (prefers-reduced-motion: reduce) {
-    .af-frame, .device-frame { transition: none; }
 }
 
 /* ===== スマホは CSS/JS ともにアニメ無効 ===== */
