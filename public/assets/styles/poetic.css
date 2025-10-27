@@ -11,7 +11,12 @@ Poetic interlude block
     justify-content: center;
     overflow: hidden;      /* ← はみ出し停止（以前は visible） */
 }
-
+@supports (height: 100svh) {
+    .poetic { min-height: 100svh; }  /* iOS 16+ などで安定 */
+}
+@supports (height: 100dvh) {
+    .poetic { min-height: 100dvh; }  /* Android/Chromium 系でも安定 */
+}
 
 /* コンテナ */
 .po-wrap {
