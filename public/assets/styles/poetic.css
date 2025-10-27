@@ -1,44 +1,35 @@
-/* ============================
-    Poetic Section Styles
-   ============================ */
-
+/* =========================
+   Poetic interlude block
+   ========================= */
 .poetic {
     position: relative;
-    width: 100%;
+    padding: 6rem 0 8rem;            /* 影の裾が境界に届かないように下を広めに */
+    background: #0f0f10;
     min-height: 100vh;
-    padding: clamp(5rem, 12vw, 9rem) 2rem;
-    background: #0f0f10 url("/images/bg_noise.webp") center/600px repeat;
-    overflow: visible;
+    display: flex;
+    align-items: center;             /* 中央配置（縦） */
+    justify-content: center;         /* 中央配置（横） */
+    overflow: visible;               /* 影の裾を切らない（最終指示を優先） */
+    text-align: center;
 }
 
 @supports (height: 100svh) {
-    .poetic {
-        min-height: 100svh;
-    }
+    .poetic { min-height: 100svh; }  /* iOS 16+ 安定 */
 }
-
 @supports (height: 100dvh) {
-    .poetic {
-        min-height: 100dvh;
-    }
+    .poetic { min-height: 100dvh; }  /* Android/Chromium 安定 */
 }
 
-/* 光のベール */
-.po-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        circle at 50% 30%,
-        rgba(255, 255, 255, 0.12),
-        rgba(255, 255, 255, 0.04) 40%,
-        transparent 80%
-    );
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 2s ease;
+/* コンテナ */
+.po-wrap {
+    width: min(980px, 90vw);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-align: center;
 }
 
-/* テキスト行 */
+/* 行テキスト（PC基準の初期状態：見えない→フェード） */
 .po-line {
     font-family: "Zen Old Mincho", "Noto Serif JP", serif;
     font-weight: 300;
@@ -48,27 +39,85 @@
     margin: 0.35em 0;
     color: #f3f3f3;
     text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.05),
-        0 0 12px rgba(255, 255, 255, 0.04);
+        0 0 8px rgba(255,255,255,0.18),
+        0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
+        0 0 50px var(--po-color-far, rgba(150,170,255,0.16)),
+        0 0 80px var(--po-color-tail, rgba(120,140,255,0.08));
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
+/* 表示アニメ用クラス（JSで付与） */
 .po-line.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* === スマホはアニメーションを完全オフ === */
+/* 光のベールは不要（デザインに合わせて撤去） */
+.po-glow {
+    display: none;
+}
+
+/* --- 2) 文字に“広めの色付きシャドウ”を付与（強め版） --- */
+.po-line {
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.18),
+        0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
+        0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
+        0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
+}
+
+/* ① 序章：中立寄り（やや青白） */
+section[aria-label="prologue"] .po-line {
+    --po-color-mid:  rgba(195,205,255,0.68);
+    --po-color-far:  rgba(175,190,255,0.54);
+    --po-color-tail: rgba(155,170,245,0.34);
+}
+
+/* ② 境界：紫寄りで“境界の声”を表す */
+section[aria-label="transition"] .po-line {
+    --po-color-mid:  rgba(190,178,255,0.60);
+    --po-color-far:  rgba(168,155,240,0.46);
+    --po-color-tail: rgba(150,138,230,0.30);
+}
+
+/* ③ 終幕：冷たい光（青白方向） */
+section[aria-label="finale"] .po-line {
+    --po-color-mid:  rgba(185,200,255,0.64);
+    --po-color-far:  rgba(165,182,248,0.50);
+    --po-color-tail: rgba(145,162,238,0.32);
+}
+
+/* ④ 問い：無情な光（白方向） */
+section[aria-label="end"] .po-line {
+    --po-color-mid:  rgba(241,241,241,0.64);
+    --po-color-far:  rgba(186,186,187,0.50);
+    --po-color-tail: rgba(132,148,235,0.34);
+}
+
+/* 英文：影を少し控えめに＋呼吸を長く */
+.po-line:lang(en) {
+    text-shadow:
+        0 0 6px rgba(255,255,255,0.14),
+        0 0 24px var(--po-color-mid),
+        0 0 48px var(--po-color-far),
+        0 0 72px var(--po-color-tail);
+    letter-spacing: 0.02em;
+    line-height: 1.55;
+}
+
+/* === モバイル：アニメ無効・中央配置／見た目はPC同等 === */
 @media (max-width: 768px) {
+    .poetic {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
     .po-line {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
-    }
-
-    .po-glow {
-        display: none !important;
+        /* シャドウはPC同等（変えない） */
     }
 }
