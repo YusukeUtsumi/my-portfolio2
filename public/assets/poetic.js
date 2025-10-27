@@ -5,7 +5,7 @@ gsap.registerPlugin(ScrollTrigger);
 function initPoetic() {
     const isSmall = window.matchMedia("(max-width: 768px)").matches;
 
-    // ====== モバイルはアニメーション無効・即表示 ======
+    // ===== スマホはアニメーション無効（見た目はPCと同じ配置） =====
     if (isSmall) {
         document.querySelectorAll('[data-poetic] .po-line').forEach(el => {
             el.classList.add('visible');
@@ -15,10 +15,10 @@ function initPoetic() {
         document.querySelectorAll('.po-glow').forEach(el => {
             el.style.display = 'none';
         });
-        return; // ScrollTriggerを作らず終了（PC表示は影響なし）
+        return; // ScrollTrigger無効
     }
 
-    // ====== PCは従来のフェード（start: "top 78%"） ======
+    // ===== PCはフェードアニメーション有効 =====
     const blocks = document.querySelectorAll('[data-poetic]');
     blocks.forEach((block) => {
         const lines = block.querySelectorAll('.po-line');
@@ -39,14 +39,14 @@ function initPoetic() {
                 tl.to(lines, {
                     opacity: 1,
                     y: 0,
-                    duration: 1.2,     // CSSのtransitionと歩調合わせ
+                    duration: 1.2,
                     stagger: 0.08
                 }, 0.05);
             }
         });
     });
 
-    // 後から高さが変わる要素へのリフレッシュ
+    // リフレッシュ処理（高さ変動対策）
     const imgs = Array.from(document.images);
     imgs.forEach(img => {
         if (!img.complete) {
@@ -64,7 +64,7 @@ function initPoetic() {
     setTimeout(() => ScrollTrigger.refresh(), 400);
 }
 
-// DOMとリソースが揃ってから初期化
+// DOMロード後に初期化
 if (document.readyState === "complete") {
     initPoetic();
 } else {

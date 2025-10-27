@@ -3,21 +3,22 @@
    ========================= */
 .poetic {
     position: relative;
-    padding: 6rem 0 8rem;            /* 影の裾が境界に届かないように下を広めに */
+    padding: 6rem 0 8rem;            /* 下の影を余裕もたせる */
     background: #0f0f10;
     min-height: 100vh;
     display: flex;
-    align-items: center;             /* 中央配置（縦） */
-    justify-content: center;         /* 中央配置（横） */
-    overflow: visible;               /* 影の裾を切らない（最終指示を優先） */
+    flex-direction: column;
+    align-items: center;             /* 横中央 */
+    justify-content: center;         /* 縦中央 */
     text-align: center;
+    overflow: visible;               /* 影を切らない */
 }
 
 @supports (height: 100svh) {
-    .poetic { min-height: 100svh; }  /* iOS 16+ 安定 */
+    .poetic { min-height: 100svh; }
 }
 @supports (height: 100dvh) {
-    .poetic { min-height: 100dvh; }  /* Android/Chromium 安定 */
+    .poetic { min-height: 100dvh; }
 }
 
 /* コンテナ */
@@ -29,7 +30,7 @@
     text-align: center;
 }
 
-/* 行テキスト（PC基準の初期状態：見えない→フェード） */
+/* 行テキスト（初期は透明） */
 .po-line {
     font-family: "Zen Old Mincho", "Noto Serif JP", serif;
     font-weight: 300;
@@ -48,55 +49,43 @@
     transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
-/* 表示アニメ用クラス（JSで付与） */
+/* フェードイン用 */
 .po-line.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 光のベールは不要（デザインに合わせて撤去） */
+/* 光エフェクトは非表示 */
 .po-glow {
     display: none;
 }
 
-/* --- 2) 文字に“広めの色付きシャドウ”を付与（強め版） --- */
-.po-line {
-    text-shadow:
-        0 0 8px rgba(255,255,255,0.18),
-        0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
-        0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
-        0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
-}
-
-/* ① 序章：中立寄り（やや青白） */
+/* 章ごとの色調整 */
 section[aria-label="prologue"] .po-line {
     --po-color-mid:  rgba(195,205,255,0.68);
     --po-color-far:  rgba(175,190,255,0.54);
     --po-color-tail: rgba(155,170,245,0.34);
 }
 
-/* ② 境界：紫寄りで“境界の声”を表す */
 section[aria-label="transition"] .po-line {
     --po-color-mid:  rgba(190,178,255,0.60);
     --po-color-far:  rgba(168,155,240,0.46);
     --po-color-tail: rgba(150,138,230,0.30);
 }
 
-/* ③ 終幕：冷たい光（青白方向） */
 section[aria-label="finale"] .po-line {
     --po-color-mid:  rgba(185,200,255,0.64);
     --po-color-far:  rgba(165,182,248,0.50);
     --po-color-tail: rgba(145,162,238,0.32);
 }
 
-/* ④ 問い：無情な光（白方向） */
 section[aria-label="end"] .po-line {
     --po-color-mid:  rgba(241,241,241,0.64);
     --po-color-far:  rgba(186,186,187,0.50);
     --po-color-tail: rgba(132,148,235,0.34);
 }
 
-/* 英文：影を少し控えめに＋呼吸を長く */
+/* 英文（影弱め＋呼吸長め） */
 .po-line:lang(en) {
     text-shadow:
         0 0 6px rgba(255,255,255,0.14),
@@ -107,17 +96,30 @@ section[aria-label="end"] .po-line {
     line-height: 1.55;
 }
 
-/* === モバイル：アニメ無効・中央配置／見た目はPC同等 === */
+/* === スマホ版（中央配置はPCと完全一致・アニメ無し） === */
 @media (max-width: 768px) {
     .poetic {
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
     }
+
+    .po-wrap {
+        width: min(980px, 90vw);
+        text-align: center;
+        margin: 0 auto;
+    }
+
     .po-line {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
-        /* シャドウはPC同等（変えない） */
+        text-shadow:
+            0 0 8px rgba(255,255,255,0.18),
+            0 0 28px var(--po-color-mid, rgba(170,185,255,0.28)),
+            0 0 56px var(--po-color-far, rgba(150,170,255,0.18)),
+            0 0 90px var(--po-color-tail, rgba(120,140,255,0.10));
     }
 }
