@@ -3,30 +3,33 @@ import { ScrollTrigger } from "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTr
 
 gsap.registerPlugin(ScrollTrigger);
 
-const section = document.querySelector("#agentflow");
+const section = document.querySelector("#agentflow, .af-section");
 if (section) {
     const head  = section.querySelector(".af-head");
-    const panel = section.querySelector(".device-frame, .af-frame");
+    // panel は .af-frame / .device-frame どちらでも対応
+    const panel = section.querySelector(".af-frame") || section.querySelector(".device-frame");
     const glow  = section.querySelector(".af-glow");
 
-    const isSmall = window.matchMedia("(max-width: 959px)").matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // ===== スマホ：アニメーション無効・即表示 =====
-    if (isSmall) {
+    // ===== スマホ：アニメ無効・即表示 =====
+    if (isMobile) {
         if (head)  gsap.set(head,  { opacity: 1, y: 0 });
         if (panel) gsap.set(panel, { opacity: 1, y: 0 });
-        if (glow)  glow.style.display = "none"; // 負荷軽減
-        // ScrollTrigger を作らず終了（PCの挙動には影響なし）
+        if (glow)  glow.style.display = "none";
+        // ScrollTrigger を作らず終了（PC挙動に影響なし）
         return;
     }
 
-    // ===== PC：従来どおり（フェードイン + グロー/ピン） =====
+    // ===== PC：フェード（ScrollTrigger）を復活 =====
     if (head || panel) {
-        gsap.set([head, panel], { opacity: 0, y: 24 });
+        gsap.set([head, panel].filter(Boolean), { opacity: 0, y: 24 });
+
         ScrollTrigger.create({
             trigger: section,
-            start: "top 72%",
+            start: "top 72%",          // 画面の72%地点に来たら発火（従来相当）
             once: true,
+            invalidateOnRefresh: true,
             onEnter: () => {
                 const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
                 if (panel) tl.to(panel, { opacity: 1, y: 0, duration: 0.6 });
@@ -35,7 +38,7 @@ if (section) {
         });
     }
 
-    // PCのみの演出（グロー強調 & ピン）
+    // PCのみの追加演出（任意・従来どおり維持）
     ScrollTrigger.matchMedia({
         "(min-width: 1024px)": function () {
             if (glow) {
@@ -49,16 +52,23 @@ if (section) {
                     }
                 });
             }
-            if (panel) {
-                ScrollTrigger.create({
-                    trigger: panel,
-                    start: "top 20%",
-                    end: "+=120%",
-                    pin: true,
-                    pinSpacing: true,
-                    scrub: 0.6
-                });
-            }
         }
     });
+
+    // レイアウト変動対策（後読み画像/フォント）
+    const imgs = Array.from(document.images);
+    imgs.forEach(img => {
+        if (!img.complete) {
+            img.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
+            img.addEventListener("error", () => ScrollTrigger.refresh(), { once: true });
+        }
+    });
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+    window.addEventListener("orientationchange", () => ScrollTrigger.refresh());
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") ScrollTrigger.refresh();
+    });
+    setTimeout(() => ScrollTrigger.refresh(), 350);
 }

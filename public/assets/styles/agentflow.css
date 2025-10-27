@@ -4,7 +4,7 @@
 .af-section {
     position: relative;
     padding: 8rem 0 6rem;
-    background: #0f0f10; /* SilentGuard と同一 */
+    background: #0f0f10;
     color: #fff;
 }
 
@@ -16,23 +16,23 @@
     gap: 3rem;
 }
 
-/* PC：左テキスト・右SVG（SilentGuard と同じ） */
+/* PC：左テキスト / 右ビジュアル */
 @media (min-width: 960px) {
     .af-container {
-        grid-template-columns: 1.1fr 1fr; /* 左:テキスト / 右:SVG */
+        grid-template-columns: 1.1fr 1fr;
         align-items: start;
     }
     .visual-wrap { order: 1; }
-    .af-head { order: 2; }
+    .af-head     { order: 2; }
 }
 
-/* SP：上SVG → 下テキスト（同じ） */
+/* SP：上ビジュアル / 下テキスト */
 @media (max-width: 959px) {
     .visual-wrap { order: 1; }
     .af-head     { order: 2; }
 }
 
-/* タイポ（SilentGuard と同値） */
+/* タイポ */
 .af-head { max-width: 720px; }
 .af-head .eyebrow {
     letter-spacing: 0.14em;
@@ -85,15 +85,8 @@
     font-size: 0.84em;
 }
 
-/* ====== ビジュアル（SilentGuard と揃える） ====== */
-.visual-wrap {
-    position: relative;
-}
-
-@media (min-width: 960px) {
-    .af-section .visual-wrap { justify-self: start; }  /* 左配置の対称性を保証 */
-    .af-frame { width: min(640px, 46vw); }             /* ← 安定する“定規” */
-}
+/* ====== ビジュアル ====== */
+.visual-wrap { position: relative; }
 
 .af-glow {
     position: absolute;
@@ -105,22 +98,22 @@
     mix-blend-mode: screen;
 }
 
-.af-frame {
+.af-frame,
+.device-frame {
     margin: 0;
     aspect-ratio: 16 / 14;
     border-radius: 1.2rem;
     overflow: hidden;
     border: 1px solid rgba(0, 255, 255, 0.3);
-    background-color: #0f0f10; /* セクション背景と一致 */
+    background-color: #0f0f10;
     box-shadow:
         0 30px 80px rgba(0, 0, 0, 0.6),
-        inset 0 1px rgba(255, 255, 255, 0.05); /* ← SilentGuard と同じ強さ */
+        inset 0 1px rgba(255, 255, 255, 0.05);
     display: grid;
     place-items: center;
-    animation: af-fade 900ms ease both;
 }
 
-/* SVG 表示（SilentGuard と同じスケール） */
+/* SVG表示 */
 .af-svg {
     width: 78%;
     height: auto;
@@ -129,25 +122,18 @@
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* Motion */
-@keyframes af-fade {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
+/* ===== フェードはJSで制御（PCのみ）。CSSは邪魔しない ===== */
 @media (prefers-reduced-motion: reduce) {
-    .af-frame { animation: none !important; }
+    .af-frame, .device-frame { transition: none; }
 }
 
-/* ===== スマホはCSSアニメも完全停止・即表示に ===== */
-@media (max-width: 959px) {
+/* ===== スマホは CSS/JS ともにアニメ無効 ===== */
+@media (max-width: 768px) {
     .af-frame,
-    .device-frame { /* device-frame が併用されている場合にも対応 */
-        animation: none !important;
+    .device-frame {
         opacity: 1 !important;
         transform: none !important;
+        animation: none !important;
     }
-    .af-glow {
-        display: none !important;
-    }
+    .af-glow { display: none !important; }
 }
