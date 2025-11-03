@@ -80,9 +80,9 @@ section[aria-label="finale"] .po-line {
 }
 
 section[aria-label="end"] .po-line {
-    --po-color-mid:  rgba(241,241,241,0.64);
-    --po-color-far:  rgba(186,186,187,0.50);
-    --po-color-tail: rgba(132,148,235,0.34);
+    --po-color-mid:  rgba(236, 225, 210, 0.64);
+    --po-color-far:  rgba(188, 158, 125, 0.5);
+    --po-color-tail: rgba(231, 171, 99, 0.34);
 }
 
 /* 英文（影弱め＋呼吸長め） */
