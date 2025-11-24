@@ -79,6 +79,41 @@
     transform: translateZ(0);
 }
 
+.about-nominees {
+    margin-top: 2.4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    animation: fadeIn 1.2s ease forwards;
+}
+
+.nominees-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.5px;
+    color: #e6e6e6; /* 淡い紫系 — ニュクスの雰囲気に合わせる */
+}
+
+.nominees-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nominees-list li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.85;
+    margin-bottom: 0.25rem;
+}
+
+/* シンプルなフェードイン */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
 /* connect ボタン（PCはCSSアニメ残す） */
 .about-contact {
     margin-top: 1.8rem;
