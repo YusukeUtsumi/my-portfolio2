@@ -3,10 +3,6 @@
 import risaGptsSvgUrl from "../assets/RisaGPT.svg?url";
 
 const bullets = [
-    "性格や趣味嗜好を設計した会話するGPTsを設計",
-    "正解よりも共感を目指した設計"
-];
-const bulletsEn = [
     "GPTs designed for conversation — built with personality and preference in mind,",
     "and created to seek empathy, not correctness."
 ];
@@ -34,18 +30,13 @@ const bulletsEn = [
                 Risa GPTs
             </h2>
             <p class="lede">
-                「Risa」は温かみのあるAIを目指す。<br />
-                人のように感じ、<span>曖昧さや想い</span>に寄り添う。<br /><br />
-                <span class="en">
-                    “Risa aspires to be an AI with warmth.”<br />
+                “Risa aspires to be an AI with warmth.”<br />
                     To <span>feel and empathize</span> like a human, embracing ambiguity and emotion.
-                </span>
             </p>
             <ul class="bullets">
                 {bullets.map((b, i) => (
                     <li>
                         {b}<br />
-                        <span class="en">{bulletsEn[i]}</span>
                     </li>
                 ))}
             </ul>

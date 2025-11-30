@@ -4,10 +4,6 @@
 import agentFlowSvgUrl from "../assets/AgentFlow.svg?url";
 
 const bullets = [
-    "YAML一枚でワークフローを定義",
-    "スクリプト・LLMを順次/並列化でシームレス連携"
-];
-const bulletsEn = [
     "Define workflows in a single YAML file",
     "Seamlessly orchestrate scripts and LLMs in sequential or parallel execution"
 ];
@@ -35,18 +31,13 @@ const bulletsEn = [
                 AgentFlow v0.3
             </h2>
             <p class="lede">
-                「喋らせるな、働かせろ。」<br />
-                LLM・スクリプトを<span>“働かせる”</span>ための軽量基盤。<br /><br />
-                <span class="en">
-                    “Don’t make them talk — make them work.”<br />
+                “Don’t make them talk — make them work.”<br />
                     A lightweight Python framework to make LLMs and scripts actually <em>work</em>.
-                </span>
             </p>
             <ul class="bullets">
                 {bullets.map((b, i) => (
                     <li>
                         {b}<br />
-                        <span class="en">{bulletsEn[i]}</span>
                     </li>
                 ))}
             </ul>

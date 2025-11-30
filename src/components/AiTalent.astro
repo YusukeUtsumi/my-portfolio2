@@ -57,8 +57,7 @@ const {
         { src: liliaDefaultA, alt: "Lilia 1",  width: liliaDefaultA.width, height: liliaDefaultA.height }
     ],
     heading = "Risa / Lilia",
-    subJa   = "AIで描く、新しい広告体験",
-    subEn   = "A new kind of advertising, drawn by AI."
+    subJa   = "A new kind of advertising, drawn by AI."
 } = Astro.props as Props;
 
 const risaMain = risa[0];
@@ -72,7 +71,6 @@ const liliaB   = lilia[1];
         <h2 class="ai-title">{heading}</h2>
         <p class="ai-sub">
             <span class="ja">{subJa}</span>
-            <span class="en"><em>{subEn}</em></span>
         </p>
     </header>
 
